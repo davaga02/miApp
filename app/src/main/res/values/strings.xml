@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MiApp</string>
+
+    <string-array name="roles_array">
+        <item>cliente</item>
+        <item>empleado</item>
+        <item>administrador</item>
+    </string-array>
+    <string name="default_web_client_id">576438427027-n9q2g3e77de4u0cfm81oao30gdd96hs3.apps.googleusercontent.com</string>
 </resources>

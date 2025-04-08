@@ -28,6 +28,9 @@
         <activity android:name=".MainActivity">
             <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
         </activity>
+        <activity android:name=".RegisterActivity">
+            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
+        </activity>
     </application>
 
 </manifest>

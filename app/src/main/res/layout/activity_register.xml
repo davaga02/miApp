@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,63 +15,50 @@
         android:orientation="vertical"
         android:padding="32dp">
 
-        <!-- Nombre de la app -->
-
-        <!-- Título de Iniciar sesión -->
-
         <TextView
-            android:id="@+id/tvAppName"
+            android:id="@+id/tvTituloRegistro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:fontFamily="@font/baloo"
-            android:gravity="center"
-            android:text="Nombre App"
+            android:text="Registro"
             android:textColor="#F7A925"
             android:textSize="30sp"
             android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
             android:background="@drawable/rounded_layout"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvTitle2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="50dp"
-                android:fontFamily="@font/baloo"
-                android:gravity="center"
-                android:password="false"
-                android:text="Iniciar Sesión"
-                android:textColor="#545454"
-                android:textSize="20sp" />
-
             <EditText
-                android:id="@+id/etUsername"
+                android:id="@+id/etNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="50dp"
+                android:layout_margin="20dp"
                 android:background="@drawable/rounded_input"
-                android:hint="Usuario"
-                android:inputType="textPersonName"
+                android:hint="Nombre completo"
                 android:padding="15dp"
                 android:textColor="#3E3E3E" />
 
             <EditText
-                android:id="@+id/etPassword"
+                android:id="@+id/etCorreo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/rounded_input"
+                android:hint="Correo"
+                android:inputType="textEmailAddress"
+                android:padding="15dp"
+                android:textColor="#3E3E3E" />
+
+            <EditText
+                android:id="@+id/etContrasena"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
                 android:background="@drawable/rounded_input"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
@@ -81,53 +69,31 @@
                 android:id="@+id/spinnerRol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/roles_array"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:entries="@array/roles_array" />
 
             <Button
-                android:id="@+id/btnLogin"
+                android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="50dp"
+                android:layout_margin="20dp"
                 android:background="@drawable/roundedbtn_input"
                 android:fontFamily="@font/baloo"
-                android:onClick="onClikAcceder"
-                android:text="Acceder"
+                android:text="Registrar"
                 android:textColor="#FFFFFF"
-                android:textColorLink="#F7A925"
                 android:textSize="18sp" />
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/btnGoogleSignIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="loginConGoogle"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"/>
-
             <TextView
-                android:id="@+id/tvRegister"
+                android:id="@+id/tvVolver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="60dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="50dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
                 android:fontFamily="@font/baloo"
-                android:gravity="center"
-                android:onClick="onClickRegistrar"
-                android:text="¿No tienes cuenta? Regístrate"
+                android:text="← Volver a Iniciar Sesión"
                 android:textColor="#545454"
                 android:textSize="16sp" />
-
         </LinearLayout>
-
-        <!-- Campo de Usuario -->
-
-        <!-- Campo de Contraseña -->
-
-        <!-- Botón de Acceso -->
-
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
