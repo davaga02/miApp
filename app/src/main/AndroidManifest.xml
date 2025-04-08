@@ -31,6 +31,12 @@
         <activity android:name=".RegisterActivity">
             <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
         </activity>
+        <activity android:name=".PrincipalClienteActivity">
+            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
+        </activity>
+        <activity android:name=".PrincipalEmpleadoActivity">
+            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
+        </activity>
     </application>
 
 </manifest>

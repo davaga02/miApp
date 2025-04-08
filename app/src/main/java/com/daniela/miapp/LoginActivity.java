@@ -45,18 +45,40 @@ public class LoginActivity extends AppCompatActivity {
 
         // 🔐 Configura Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("576438427027-n9q2g3e77de4u0cfm81oao30gdd96hs3.apps.googleusercontent.com") // 👈 Web Client ID
+                .requestIdToken("576438427027-ns3dui7upkr9s22mmn34ct6d0165dkqm.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // ✅ Verifica si hay una sesión previa
+        GoogleSignInAccount lastSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if (lastSignInAccount != null) {
+            Log.d("LOGIN_GOOGLE", "Última sesión: " + lastSignInAccount.getEmail());
+        } else {
+            Log.d("LOGIN_GOOGLE", "Ninguna sesión anterior");
+        }
 
         // 📲 Nuevo método recomendado en lugar de startActivityForResult
         googleSignInLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                    Log.d("LOGIN_GOOGLE", "Resultado recibido del launcher");
+
+                    Intent data = result.getData();
+
+                    if (data == null) {
+                        Log.e("LOGIN_GOOGLE", "data == null");
+                    } else {
+                        Log.d("LOGIN_GOOGLE", "Intent data: " + data.toUri(0));
+                    }
+
+                    if (result.getResultCode() == RESULT_OK && data != null) {
+                        Log.d("LOGIN_GOOGLE", "Intent OK, extrayendo cuenta...");
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                         handleSignInResult(task);
+                    } else {
+                        Log.e("LOGIN_GOOGLE", "Sign-In cancelado o sin datos");
+                        Toast.makeText(this, "Login cancelado o fallido", Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -107,16 +129,19 @@ public class LoginActivity extends AppCompatActivity {
 
     // ✅ Resultado del inicio de sesión con Google
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        Log.d("LOGIN_GOOGLE", "Entró en handleSignInResult");
+
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            Log.d("LOGIN_GOOGLE", "Cuenta obtenida: " + account.getEmail());
 
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
             FirebaseAuth.getInstance().signInWithCredential(credential)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                // 👉 Aquí se asigna automáticamente el rol de "cliente"
+                                Log.d("LOGIN_GOOGLE", "Autenticado como: " + user.getEmail());
                                 guardarUsuarioFirestore(
                                         user.getUid(),
                                         user.getDisplayName(),
@@ -126,15 +151,17 @@ public class LoginActivity extends AppCompatActivity {
 
                                 Toast.makeText(this, "Bienvenido " + user.getDisplayName(), Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(this, PrincipalClienteActivity.class));
+                                finish();
                             }
                         } else {
-                            Toast.makeText(this, "Error al autenticar con Google", Toast.LENGTH_SHORT).show();
+                            Log.e("LOGIN_GOOGLE", "Error en signInWithCredential", task.getException());
+                            Toast.makeText(this, "Error al autenticar", Toast.LENGTH_SHORT).show();
                         }
                     });
 
         } catch (ApiException e) {
-            Log.w("GoogleSignIn", "Error: " + e.getStatusCode());
-            Toast.makeText(this, "Fallo el inicio con Google", Toast.LENGTH_SHORT).show();
+            Log.e("LOGIN_GOOGLE", "ApiException: código = " + e.getStatusCode(), e);
+            Toast.makeText(this, "Fallo login: " + e.getStatusCode(), Toast.LENGTH_SHORT).show();
         }
     }
 
