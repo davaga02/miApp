@@ -19,8 +19,7 @@
         <item>Selecciona una subcategoría</item>
         <item>Conos</item>
         <item>Tarrinas</item>
-        <item>Banana Split</item>
-        <item>Sundaes</item>
+
     </string-array>
 
     <string-array name="subcategorias_bebidas">

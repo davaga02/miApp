@@ -57,14 +57,12 @@
                 android:id="@+id/spinnerCategoria"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_bg"
                 android:layout_marginBottom="12dp" />
 
             <Spinner
                 android:id="@+id/spinnerSubcategoria"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_bg"
                 android:layout_marginBottom="24dp" />
 
 

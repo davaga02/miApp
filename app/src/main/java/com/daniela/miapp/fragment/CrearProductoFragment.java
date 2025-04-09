@@ -59,7 +59,19 @@ public class CrearProductoFragment extends Fragment {
         layoutTamanos = view.findViewById(R.id.layoutTamanos);
         btnCrear = view.findViewById(R.id.btnCrearProducto);
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        switchTamanos.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                layoutTamanos.setVisibility(View.VISIBLE);
+                etPrecio.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Tamaños activado: " + isChecked, Toast.LENGTH_SHORT).show();
+
+            } else {
+                layoutTamanos.setVisibility(View.GONE);
+                etPrecio.setVisibility(View.VISIBLE);
+            }
+        });
+
+        db = FirebaseFirestore.getInstance();
 
         List<String> listaCategorias = new ArrayList<>();
         ArrayAdapter<String> categoriaAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, listaCategorias);
@@ -69,10 +81,15 @@ public class CrearProductoFragment extends Fragment {
         db.collection("categorias").get().addOnSuccessListener(querySnapshot -> {
             listaCategorias.clear();
             listaCategorias.add("Selecciona una categoría");
+
             for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                 listaCategorias.add(doc.getId());
             }
+
             categoriaAdapter.notifyDataSetChanged();
+
+            // 👇 Verifica visualmente
+            Toast.makeText(getContext(), "Categorías cargadas: " + listaCategorias.size(), Toast.LENGTH_SHORT).show();
         });
 
         spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -93,11 +110,11 @@ public class CrearProductoFragment extends Fragment {
                             spSubcategoria.setAdapter(subcatAdapter);
 
                         });
-                if (spCategoria.getSelectedItemPosition() == 0) {
-                    Toast.makeText(getContext(), "Selecciona una categoría válida", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
             }
+
+
+
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
@@ -149,6 +166,15 @@ public class CrearProductoFragment extends Fragment {
                 return;
             }
             producto.put("precio", Double.parseDouble(precioStr));
+        }
+
+        if (spCategoria.getSelectedItemPosition() == 0 || spCategoria.getSelectedItem() == null) {
+            Toast.makeText(getContext(), "Selecciona una categoría válida", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (spSubcategoria.getSelectedItem() == null || spSubcategoria.getSelectedItem().toString().isEmpty()) {
+            Toast.makeText(getContext(), "Selecciona una subcategoría válida", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         db.collection("productos")
