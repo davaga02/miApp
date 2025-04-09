@@ -77,13 +77,6 @@
                 android:padding="15dp"
                 android:textColor="#3E3E3E" />
 
-            <Spinner
-                android:id="@+id/spinnerRol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/roles_array"
-                android:layout_marginTop="16dp"/>
-
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"

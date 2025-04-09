@@ -2,6 +2,7 @@ package com.daniela.miapp;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,10 +22,18 @@ public class PrincipalAdminActivity extends AppCompatActivity {
     private Fragment fragment;
     private FragmentManager fragmentManager;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantallaprincipaladmin);
+
+        String nombre = getIntent().getStringExtra("nombreUsuario");
+        TextView tvAppName = findViewById(R.id.tvAppName);
+
+        if (tvAppName != null && nombre != null) {
+            tvAppName.setText("Hola " + nombre);
+        }
 
         initView();
         initValues();

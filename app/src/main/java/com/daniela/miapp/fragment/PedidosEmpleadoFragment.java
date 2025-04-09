@@ -18,6 +18,13 @@ public class PedidosEmpleadoFragment extends Fragment {
         // Constructor vacío requerido
     }
 
+    public static Fragment newInstance() {
+        Bundle args = new Bundle();
+        PedidosEmpleadoFragment fragment = new PedidosEmpleadoFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,

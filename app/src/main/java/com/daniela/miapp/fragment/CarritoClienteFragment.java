@@ -11,6 +11,17 @@ import androidx.fragment.app.Fragment;
 import com.daniela.miapp.R;
 
 public class CarritoClienteFragment extends Fragment {
+    public CarritoClienteFragment() {
+        // Constructor vacío
+    }
+    public static Fragment newInstance() {
+        Bundle args = new Bundle();
+
+        CarritoClienteFragment fragment = new CarritoClienteFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

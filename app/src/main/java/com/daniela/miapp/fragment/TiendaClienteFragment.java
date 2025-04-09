@@ -11,6 +11,17 @@ import androidx.fragment.app.Fragment;
 import com.daniela.miapp.R;
 
 public class TiendaClienteFragment extends Fragment {
+    public TiendaClienteFragment() {
+        // Constructor vacío
+    }
+    public static Fragment newInstance() {
+        Bundle args = new Bundle();
+
+        TiendaClienteFragment fragment = new TiendaClienteFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

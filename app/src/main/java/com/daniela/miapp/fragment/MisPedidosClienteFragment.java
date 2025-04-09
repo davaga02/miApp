@@ -11,6 +11,17 @@ import androidx.fragment.app.Fragment;
 import com.daniela.miapp.R;
 
 public class MisPedidosClienteFragment extends Fragment {
+
+    public MisPedidosClienteFragment() {
+        // Constructor vacío
+    }
+    public static Fragment newInstance() {
+        Bundle args = new Bundle();
+        MisPedidosClienteFragment fragment = new MisPedidosClienteFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

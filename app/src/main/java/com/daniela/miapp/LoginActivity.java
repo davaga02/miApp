@@ -107,21 +107,30 @@ public class LoginActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
+                        // OBTENEMOS nombre y rol
                         String rol = queryDocumentSnapshots.getDocuments().get(0).getString("rol");
+                        String nombre = queryDocumentSnapshots.getDocuments().get(0).getString("nombre");
 
                         Toast.makeText(this, "Bienvenido " + rol, Toast.LENGTH_SHORT).show();
 
+                        Intent intent = null;
+
                         if ("administrador".equals(rol)) {
-                            startActivity(new Intent(this, PrincipalAdminActivity.class));
+                            intent = new Intent(this, PrincipalAdminActivity.class);
                         } else if ("empleado".equals(rol)) {
-                            startActivity(new Intent(this, PrincipalEmpleadoActivity.class));
+                            intent = new Intent(this, PrincipalEmpleadoActivity.class);
                         } else {
-                            startActivity(new Intent(this, PrincipalClienteActivity.class));
+                            intent = new Intent(this, PrincipalClienteActivity.class);
                         }
+
+                        // PASAMOS EL NOMBRE por el intent
+                        intent.putExtra("nombreUsuario", nombre);
+                        startActivity(intent);
 
                     } else {
                         Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
                     }
+
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error al conectar", Toast.LENGTH_SHORT).show());
@@ -181,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onClickRegistrar(View view) {
-        // Opcional: ir a la actividad de registro
+        // ir a la actividad de registro
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
