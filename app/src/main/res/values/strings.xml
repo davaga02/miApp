@@ -7,4 +7,39 @@
         <item>administrador</item>
     </string-array>
     <string name="default_web_client_id">576438427027-n9q2g3e77de4u0cfm81oao30gdd96hs3.apps.googleusercontent.com</string>
+
+    <string-array name="categorias_array">
+        <item>Selecciona una categoría</item>
+        <item>Helados</item>
+        <item>Bebidas</item>
+        <item>Postres</item>
+    </string-array>
+
+    <string-array name="subcategorias_helados">
+        <item>Selecciona una subcategoría</item>
+        <item>Conos</item>
+        <item>Tarrinas</item>
+        <item>Banana Split</item>
+        <item>Sundaes</item>
+    </string-array>
+
+    <string-array name="subcategorias_bebidas">
+        <item>Selecciona una subcategoría</item>
+        <item>Granizados</item>
+        <item>Batidos</item>
+        <item>Refrescos</item>
+        <item>Café y té</item>
+    </string-array>
+
+    <string-array name="subcategorias_postres">
+        <item>Selecciona una subcategoría</item>
+        <item>Tartas</item>
+        <item>Gofres</item>
+        <item>Crepes</item>
+        <item>Donuts</item>
+    </string-array>
+
+    <string-array name="subcategorias_default">
+        <item>Selecciona una subcategoría</item>
+    </string-array>
 </resources>

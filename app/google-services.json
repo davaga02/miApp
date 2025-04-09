@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "576438427027",
+    "project_id": "proyecto-integrado-4be27",
+    "storage_bucket": "proyecto-integrado-4be27.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576438427027:android:9baf856b1d0bdbbd841c66",
+        "android_client_info": {
+          "package_name": "com.daniela.miapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576438427027-bqlbt1dqs10joaiugiaa72anuibul8l8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daniela.miapp",
+            "certificate_hash": "1b5fb13b7513b0aa042d50e3238f2b9840cca32f"
+          }
+        },
+        {
+          "client_id": "576438427027-ns3dui7upkr9s22mmn34ct6d0165dkqm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNo_Re5A9jE_3cWoWNlaemoigs25bmvkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576438427027-ns3dui7upkr9s22mmn34ct6d0165dkqm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

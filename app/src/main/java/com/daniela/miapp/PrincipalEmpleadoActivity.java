@@ -2,6 +2,8 @@
 package com.daniela.miapp;
 
 import android.os.Bundle;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -19,6 +21,13 @@ public class PrincipalEmpleadoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantallaprincipalempleado);
+
+        String nombre = getIntent().getStringExtra("nombreUsuario");
+        TextView tvAppName = findViewById(R.id.tvAppName);
+
+        if (tvAppName != null && nombre != null) {
+            tvAppName.setText("Hola " + nombre);
+        }
 
         bottomNavigation = findViewById(R.id.bottom_navigation_empleado);
 
