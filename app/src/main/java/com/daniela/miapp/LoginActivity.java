@@ -22,8 +22,10 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etNombreUs, etContrasena;
-    private Button btnLogin, btnGoogle;
+    private EditText etCorreo, etContrasena;
+    private Button btnLogin;
+    private SignInButton btnGoogle;
+
     private TextView tvRegistro;
 
     private FirebaseAuth mAuth;
@@ -35,10 +37,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etNombreUs = findViewById(R.id.email);
+        etCorreo = findViewById(R.id.email);
         etContrasena = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btnLogin);
-        SignInButton btnGoogle = findViewById(R.id.btnGoogleSignIn);
+        btnGoogle = findViewById(R.id.btnGoogleSignIn);
         tvRegistro = findViewById(R.id.tvRegister);
 
         mAuth = FirebaseAuth.getInstance();
@@ -89,9 +91,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // 🔐 Login con email y contraseña (simulado)
+    // 🔐 Login con email y contraseña
     public void onClikAcceder(View view) {
-        String correo = etNombreUs.getText().toString().trim();
+        String correo = etCorreo.getText().toString().trim();
         String contrasena = etContrasena.getText().toString().trim();
 
         if (correo.isEmpty() || contrasena.isEmpty()) {
@@ -195,4 +197,6 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void loginConGoogle(View view) {
+    }
 }

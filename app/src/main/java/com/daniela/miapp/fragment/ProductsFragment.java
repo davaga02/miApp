@@ -42,7 +42,7 @@ public class ProductsFragment extends Fragment {
         // Inflar el layout para este fragmento
         return inflater.inflate(R.layout.fragment_products, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_products, container, false);
+        /*View view = inflater.inflate(R.layout.fragment_products, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerProductos);
         btnAgregar = view.findViewById(R.id.btnAgregar);
@@ -52,17 +52,19 @@ public class ProductsFragment extends Fragment {
 
         btnAgregar.setOnClickListener(v -> {
             // Cambia al fragmento de crear producto
-            Fragment crearFragment = new CrearProductoFragment();
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frameContainer, crearFragment)
-                    .addToBackStack(null)
-                    .commit();
+            //Fragment crearFragment = new CrearProductoFragment();
+            //getActivity().getSupportFragmentManager()
+                    //.beginTransaction()
+                    //.replace(R.id.frameContainer, crearFragment)
+                    //.addToBackStack(null)
+                    //.commit();
         });
 
         return view;
-    }
 
+         */
+    }
+/*
     private void cargarProductos() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("productos")
@@ -77,5 +79,7 @@ public class ProductsFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al cargar productos", Toast.LENGTH_SHORT).show());
     }
+
+ */
 
 }
