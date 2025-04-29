@@ -1,5 +1,7 @@
 package com.daniela.miapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -21,6 +23,7 @@ public class PrincipalAdminActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Fragment fragment;
     private FragmentManager fragmentManager;
+    String nombre;
 
 
     @Override
@@ -28,10 +31,22 @@ public class PrincipalAdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pantallaprincipaladmin);
 
-        String nombre = getIntent().getStringExtra("nombreUsuario");
-        TextView tvAppName = findViewById(R.id.tvAppName);
 
-        if (tvAppName != null && nombre != null) {
+        SharedPreferences prefs = getSharedPreferences("MiAppPrefs", MODE_PRIVATE);
+        nombre = getIntent().getStringExtra("nombreUsuario");
+
+        if (!prefs.getBoolean("logueado", false)) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+
+        if (nombre == null || nombre.isEmpty()) {
+            nombre = prefs.getString("nombreUsuario", "Administrador");
+        }
+
+        TextView tvAppName = findViewById(R.id.tvAppName);
+        if (tvAppName != null) {
             tvAppName.setText("Hola " + nombre);
         }
 

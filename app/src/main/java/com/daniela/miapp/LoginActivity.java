@@ -1,6 +1,7 @@
 package com.daniela.miapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -127,6 +128,12 @@ public class LoginActivity extends AppCompatActivity {
 
                         // PASAMOS EL NOMBRE por el intent
                         intent.putExtra("nombreUsuario", nombre);
+                        SharedPreferences prefs = getSharedPreferences("MiAppPrefs", MODE_PRIVATE);
+                        prefs.edit()
+                                .putString("nombreUsuario", nombre)
+                                .putString("rol", rol)
+                                .putBoolean("logueado", true)
+                                .apply();
                         startActivity(intent);
 
                     } else {

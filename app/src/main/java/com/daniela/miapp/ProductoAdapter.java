@@ -9,8 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Map;
 
-public class ProductoAdapter  extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
+public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
 
     private List<Producto> listaProductos;
 
@@ -28,11 +29,21 @@ public class ProductoAdapter  extends RecyclerView.Adapter<ProductoAdapter.Produ
     @Override
     public void onBindViewHolder(@NonNull ProductoViewHolder holder, int position) {
         Producto producto = listaProductos.get(position);
+
         holder.tvNombre.setText(producto.getNombre());
-        holder.tvCategoria.setText(producto.getCategoria());
         holder.tvDescripcion.setText(producto.getDescripcion());
-        holder.tvPrecio.setText(String.format("€%.2f", producto.getPrecio()));
         holder.tvStock.setText("Stock: " + producto.getStock());
+        holder.tvCategoria.setText(producto.getCategoria() + " - " + producto.getSubcategoria());
+
+        if (producto.getTamanos() != null && !producto.getTamanos().isEmpty()) {
+            Map<String, Double> tamanos = producto.getTamanos();
+            String precios = "Pequeño: €" + tamanos.get("pequeno") +
+                    " | Mediano: €" + tamanos.get("mediano") +
+                    " | Grande: €" + tamanos.get("grande");
+            holder.tvPrecio.setText(precios);
+        } else {
+            holder.tvPrecio.setText("Precio: €" + String.format("%.2f", producto.getPrecio()));
+        }
     }
 
     @Override
@@ -41,15 +52,16 @@ public class ProductoAdapter  extends RecyclerView.Adapter<ProductoAdapter.Produ
     }
 
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
-        TextView tvNombre, tvCategoria, tvDescripcion, tvPrecio, tvStock;
+        TextView tvNombre, tvDescripcion, tvCategoria, tvPrecio, tvStock;
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvNombre = itemView.findViewById(R.id.tvNombreProducto);
-            tvCategoria = itemView.findViewById(R.id.tvCategoriaProducto);
-            tvDescripcion = itemView.findViewById(R.id.tvDescripcionProducto);
-            tvPrecio = itemView.findViewById(R.id.tvPrecioProducto);
-            tvStock = itemView.findViewById(R.id.tvStockProducto);
+            tvNombre = itemView.findViewById(R.id.tvNombre);
+            tvDescripcion = itemView.findViewById(R.id.tvDescripcion);
+            tvCategoria = itemView.findViewById(R.id.tvCategoria);
+            tvPrecio = itemView.findViewById(R.id.tvPrecio);
+            tvStock = itemView.findViewById(R.id.tvStock);
         }
     }
 }
+

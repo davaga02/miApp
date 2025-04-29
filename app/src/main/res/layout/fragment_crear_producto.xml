@@ -27,14 +27,17 @@
                 android:id="@+id/etNombreProducto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_bg"
                 android:hint="Nombre del producto"
                 android:inputType="text"
+                android:padding="12dp"
                 android:layout_marginBottom="12dp" />
 
             <EditText
                 android:id="@+id/etDescripcionProducto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_bg"
                 android:hint="Descripción"
                 android:inputType="textMultiLine"
                 android:minLines="3"
@@ -42,17 +45,10 @@
                 android:layout_marginBottom="12dp" />
 
             <EditText
-                android:id="@+id/etPrecioProducto"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Precio"
-                android:inputType="numberDecimal"
-                android:layout_marginBottom="12dp" />
-
-            <EditText
                 android:id="@+id/etStockProducto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/rounded_bg"
                 android:hint="Stock"
                 android:inputType="number"
                 android:layout_marginBottom="12dp" />
@@ -69,6 +65,58 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp" />
 
+
+            <Switch
+                android:id="@+id/switchTamanos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¿Este producto tiene varios tamaños?"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/etPrecio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_bg"
+                android:hint="Precio único (€)"
+                android:inputType="numberDecimal"
+                android:visibility="visible" />
+
+            <!-- ⬇️ Campo de tamaños (AHORA BIEN UBICADO) -->
+            <LinearLayout
+                android:id="@+id/layoutTamanos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/etPrecioPequeno"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_bg"
+                    android:hint="Precio pequeño (€)"
+                    android:inputType="numberDecimal"/>
+
+                <EditText
+                    android:id="@+id/etPrecioMediano"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_bg"
+                    android:hint="Precio mediano (€)"
+                    android:inputType="numberDecimal"/>
+
+                <EditText
+                    android:id="@+id/etPrecioGrande"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_bg"
+                    android:hint="Precio grande (€)"
+                    android:inputType="numberDecimal"/>
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btnCrearProducto"
                 android:layout_width="match_parent"
@@ -77,8 +125,12 @@
                 android:backgroundTint="#F7A925"
                 android:textColor="#FFFFFF"
                 android:textAllCaps="false" />
-
         </LinearLayout>
+
+
+
+
+
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
