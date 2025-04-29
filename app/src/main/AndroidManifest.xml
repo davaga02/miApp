@@ -12,13 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MiApp"
         tools:targetApi="31">
-        <activity android:name=".LoginActivity"
+        <activity android:name=".WelcomeActivity"
             android:exported="true">
             <!-- Definir la actividad de inicio como la principal -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".LoginActivity">
+            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
         </activity>
 
         <!-- Actividad de la Pantalla Principal (Administrador) -->

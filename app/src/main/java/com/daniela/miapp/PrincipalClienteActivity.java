@@ -10,17 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.daniela.miapp.fragment.CarritoClienteFragment;
-import com.daniela.miapp.fragment.EmployeesFragment;
 import com.daniela.miapp.fragment.HomeFragment;
 import com.daniela.miapp.fragment.InicioClienteFragment;
-import com.daniela.miapp.fragment.InicioEmpleadoFragment;
 import com.daniela.miapp.fragment.MisPedidosClienteFragment;
-import com.daniela.miapp.fragment.OrdersFragment;
-import com.daniela.miapp.fragment.PedidosEmpleadoFragment;
 import com.daniela.miapp.fragment.PerfilClienteFragment;
-import com.daniela.miapp.fragment.ProductsFragment;
-import com.daniela.miapp.fragment.ProfileFragment;
-import com.daniela.miapp.fragment.TiendaClienteFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

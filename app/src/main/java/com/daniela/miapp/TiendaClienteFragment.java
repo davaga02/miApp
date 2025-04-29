@@ -1,4 +1,4 @@
-package com.daniela.miapp.fragment;
+package com.daniela.miapp;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.daniela.miapp.R;
 
 public class TiendaClienteFragment extends Fragment {
     public TiendaClienteFragment() {
