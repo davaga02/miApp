@@ -1,126 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FEF4F0"
     tools:context=".LoginActivity">
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="32dp">
-
-        <!-- Nombre de la app -->
-
-        <!-- Título de Iniciar sesión -->
-
-        <TextView
-            android:id="@+id/tvAppName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:fontFamily="@font/baloo"
-            android:gravity="center"
-            android:text="Nombre App"
-            android:textColor="#F7A925"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+        android:padding="32dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/rounded_layout"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F3B3CD"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvTitle2"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="40dp"
                 android:fontFamily="@font/baloo"
-                android:gravity="center"
-                android:password="false"
                 android:text="Iniciar Sesión"
-                android:textColor="#545454"
-                android:textSize="20sp" />
+                android:textColor="#E34A35"
+                android:textSize="26sp"
+                android:textStyle="bold" />
 
+            <!-- Input: Correo -->
             <EditText
-                android:id="@+id/etUsername"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/rounded_input"
-                android:hint="Usuario"
-                android:inputType="textPersonName"
-                android:padding="15dp"
+                android:hint="Correo electrónico"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
                 android:textColor="#3E3E3E" />
 
+            <!-- Input: Contraseña -->
             <EditText
-                android:id="@+id/etPassword"
+                android:id="@+id/password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/rounded_input"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
-                android:padding="15dp"
+                android:padding="12dp"
                 android:textColor="#3E3E3E" />
 
+            <!-- Olvidaste tu contraseña -->
+            <TextView
+                android:id="@+id/forgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginBottom="30dp"
+                android:text="¿Olvidaste tu contraseña?"
+                android:textColor="#E34A35"
+                android:textSize="14sp" />
+
+            <!-- Botón: Acceder -->
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="50dp"
-                android:background="@drawable/roundedbtn_input"
-                android:fontFamily="@font/baloo"
+                android:layout_height="50dp"
+                android:backgroundTint="#E34A35"
                 android:onClick="onClikAcceder"
-                android:text="Acceder"
+                android:text="Iniciar sesión"
                 android:textColor="#FFFFFF"
-                android:textColorLink="#F7A925"
-                android:textSize="18sp" />
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
 
+            <!-- Botón de Google -->
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/btnGoogleSignIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="loginConGoogle"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp"
+                android:onClick="loginConGoogle" />
 
+            <!-- ¿No tienes cuenta? -->
             <TextView
                 android:id="@+id/tvRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="60dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginRight="50dp"
-                android:fontFamily="@font/baloo"
-                android:gravity="center"
                 android:onClick="onClickRegistrar"
                 android:text="¿No tienes cuenta? Regístrate"
-                android:textColor="#545454"
-                android:textSize="16sp" />
-
+                android:textColor="#E34A35"
+                android:textSize="14sp" />
         </LinearLayout>
-
-        <!-- Campo de Usuario -->
-
-        <!-- Campo de Contraseña -->
-
-        <!-- Botón de Acceso -->
-
-    </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Fondo transparente con un color sólido -->
-    <solid android:color="#80F7A925"/> <!-- #80 es la transparencia (50%) y FF7A33 es el color naranja -->
-
-    <!-- Bordes redondeados -->
-    <corners android:radius="16dp"/>
-
-    <!-- Borde opcional para el layout -->
-    <stroke android:color="#F7A925" android:width="0dp"/>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#F3B3CD"/> <!-- o #E34A35 para el botón -->
+    <corners android:radius="20dp"/>
 </shape>

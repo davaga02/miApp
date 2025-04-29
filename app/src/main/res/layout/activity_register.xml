@@ -1,99 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/registerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FEF4F0"
     tools:context=".RegisterActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="32dp">
-
-        <TextView
-            android:id="@+id/tvTituloRegistro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:fontFamily="@font/baloo"
-            android:text="Registro"
-            android:textColor="#F7A925"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+        android:padding="32dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/rounded_layout"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
+            <!-- Título: Crear Cuenta -->
+            <TextView
+                android:id="@+id/tvTituloRegistro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Crear Cuenta"
+                android:textColor="#E34A35"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="40dp"
+                android:fontFamily="@font/baloo" />
+
+            <!-- Input: Nombre -->
             <EditText
                 android:id="@+id/etNombre"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/rounded_input"
+                android:layout_height="50dp"
                 android:hint="Nombre completo"
-                android:padding="15dp"
-                android:textColor="#3E3E3E" />
+                android:inputType="textPersonName"
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:textColor="#3E3E3E"
+                android:layout_marginBottom="20dp" />
 
+            <!-- Input: Correo -->
             <EditText
                 android:id="@+id/etCorreo"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/rounded_input"
-                android:hint="Correo"
+                android:layout_height="50dp"
+                android:hint="Correo electrónico"
                 android:inputType="textEmailAddress"
-                android:padding="15dp"
-                android:textColor="#3E3E3E" />
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:textColor="#3E3E3E"
+                android:layout_marginBottom="20dp" />
 
+            <!-- Input: Contraseña -->
             <EditText
                 android:id="@+id/etContrasena"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/rounded_input"
+                android:layout_height="50dp"
                 android:hint="Contraseña"
                 android:inputType="textPassword"
-                android:padding="15dp"
-                android:textColor="#3E3E3E" />
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:textColor="#3E3E3E"
+                android:layout_marginBottom="30dp" />
 
+            <!-- Spinner: Rol -->
             <Spinner
                 android:id="@+id/spinnerRol"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_input"
+                android:padding="12dp"
+                android:layout_marginBottom="30dp"
                 android:entries="@array/roles_array" />
 
+            <!-- Botón: Registrar -->
             <Button
                 android:id="@+id/btnRegistrar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="@drawable/roundedbtn_input"
+                android:layout_height="50dp"
+                android:backgroundTint="#E34A35"
                 android:fontFamily="@font/baloo"
+                android:onClick="onClickRegistrarUsuario"
                 android:text="Registrar"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
 
+            <!-- Link: Volver a Iniciar sesión -->
             <TextView
                 android:id="@+id/tvVolver"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="¿Ya tienes cuenta? Inicia sesión"
+                android:textColor="#E34A35"
+                android:textSize="14sp"
+                android:layout_marginTop="20dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:fontFamily="@font/baloo"
-                android:text="← Volver a Iniciar Sesión"
-                android:textColor="#545454"
-                android:textSize="16sp" />
+                android:onClick="onClickVolverLogin" />
         </LinearLayout>
-    </LinearLayout>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
