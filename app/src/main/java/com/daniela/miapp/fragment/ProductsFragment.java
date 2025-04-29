@@ -37,6 +37,7 @@ public class ProductsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    /*
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +65,9 @@ public class ProductsFragment extends Fragment {
 
          */
     }
+
+
+
 /*
     private void cargarProductos() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -79,7 +83,8 @@ public class ProductsFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al cargar productos", Toast.LENGTH_SHORT).show());
     }
+    }
 
  */
 
-}
+
