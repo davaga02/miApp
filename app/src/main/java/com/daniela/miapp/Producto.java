@@ -1,8 +1,9 @@
 package com.daniela.miapp;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class Producto {
+public class Producto implements Serializable {
 
     private String id;
     private String nombre;

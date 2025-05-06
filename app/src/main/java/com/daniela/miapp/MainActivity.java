@@ -1,6 +1,7 @@
 package com.daniela.miapp;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error cargando productos", e));
     }
 
-    private void mostrarCategoriasConProductos(Map<String, List<Producto>> mapa) {
+    private void mostrarCategoriasConProductos(Map<String, List<Producto>> mapa)  {
         contenedorCategorias.removeAllViews();
 
         for (Map.Entry<String, List<Producto>> entry : mapa.entrySet()) {
@@ -86,7 +87,15 @@ public class MainActivity extends AppCompatActivity {
             rv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-            ProductoAdapter adapter = new ProductoAdapter(MainActivity.this,productos);
+            ProductoAdapter adapter = new ProductoAdapter(MainActivity.this, productos, new ProductoAdapter.OnProductoClickListener() {
+                @Override
+                public void onProductoClick(Producto producto) {
+                    // Abre la pantalla de detalles
+                    Intent intent = new Intent(MainActivity.this, DetalleProductoActivity.class);
+                    intent.putExtra("producto", producto);
+                    startActivity(intent);
+                }
+            });
             rv.setAdapter(adapter);
 
             contenedorCategorias.addView(rv);

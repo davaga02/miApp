@@ -1,5 +1,6 @@
 package com.daniela.miapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -26,7 +27,15 @@ public class ProductosActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerProductos);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new ProductoAdapter(this, productos);
+        adapter = new ProductoAdapter(this, productos, new ProductoAdapter.OnProductoClickListener() {
+            @Override
+            public void onProductoClick(Producto producto) {
+                // Abre la pantalla de detalles
+                Intent intent = new Intent(ProductosActivity.this, DetalleProductoActivity.class);
+                intent.putExtra("producto", producto);
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
 
         cargarProductos();

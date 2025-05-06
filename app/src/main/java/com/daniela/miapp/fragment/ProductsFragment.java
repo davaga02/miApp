@@ -1,5 +1,6 @@
 package com.daniela.miapp.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,12 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daniela.miapp.AdapterCategoria;
+import com.daniela.miapp.DetalleProductoActivity;
 import com.daniela.miapp.Producto;
 import com.daniela.miapp.ProductoAdapter;
 import com.daniela.miapp.R;
@@ -42,19 +45,28 @@ public class ProductsFragment extends Fragment {
         rvProductos = view.findViewById(R.id.rvProductos);
         rvCategorias = view.findViewById(R.id.rvCategorias);
 
-        rvProductos.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapterProductos = new ProductoAdapter(getContext(), listaProductos);
+        rvProductos.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columnas;
+        adapterProductos = new ProductoAdapter(getContext(), listaProductos, producto -> {
+            Intent intent = new Intent(getContext(), DetalleProductoActivity.class);
+            intent.putExtra("producto", producto);  // Producto debe ser Serializable o Parcelable
+            startActivity(intent);
+        });
+        rvProductos.setAdapter(adapterProductos);
         rvProductos.setAdapter(adapterProductos);
 
         rvCategorias.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         adapterCategoria = new AdapterCategoria(listaCategorias, categoriaSeleccionada -> {
-            List<Producto> filtrados = new ArrayList<>();
-            for (Producto p : listaProductos) {
-                if (p.getCategoria().equals(categoriaSeleccionada)) {
-                    filtrados.add(p);
+            if (categoriaSeleccionada.equals("Todos")) {
+                adapterProductos.setProductos(listaProductos); // Sin filtro
+            } else {
+                List<Producto> filtrados = new ArrayList<>();
+                for (Producto p : listaProductos) {
+                    if (p.getCategoria().equals(categoriaSeleccionada)) {
+                        filtrados.add(p);
+                    }
                 }
+                adapterProductos.setProductos(filtrados);
             }
-            adapterProductos.setProductos(filtrados);
             adapterProductos.notifyDataSetChanged();
         });
         rvCategorias.setAdapter(adapterCategoria);
@@ -70,6 +82,7 @@ public class ProductsFragment extends Fragment {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     listaCategorias.clear();
+                    listaCategorias.add("Todos");
                     for (DocumentSnapshot doc : snapshot) {
                         String nombre = doc.getString("nombre");
                         if (nombre != null) listaCategorias.add(nombre);
@@ -83,14 +96,15 @@ public class ProductsFragment extends Fragment {
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     listaProductos.clear();
-                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                    for (DocumentSnapshot doc : snapshot) {
                         Producto producto = doc.toObject(Producto.class);
                         if (producto != null) listaProductos.add(producto);
                     }
-                    adapterProductos.setProductos(listaProductos);
+                    adapterProductos.setProductos(listaProductos); // Muestra todos por defecto
                     adapterProductos.notifyDataSetChanged();
                 });
     }
+
 }
 
 
