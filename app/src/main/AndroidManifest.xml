@@ -44,6 +44,9 @@
         <activity android:name=".DetalleProductoActivity">
             <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
         </activity>
+        <activity android:name=".EditarProductoActivity">
+            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
+        </activity>
     </application>
 
 </manifest>
