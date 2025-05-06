@@ -4,16 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daniela.miapp.AdapterCategoria;
 import com.daniela.miapp.Producto;
 import com.daniela.miapp.ProductoAdapter;
 import com.daniela.miapp.R;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -22,69 +24,73 @@ import java.util.List;
 
 public class ProductsFragment extends Fragment {
 
-    private RecyclerView recyclerView;
-    private Button btnAgregar;
-
-    public  ProductsFragment() {
-        // Constructor vacío
-    }
+    private RecyclerView rvProductos, rvCategorias;
+    private ProductoAdapter adapterProductos;
+    private AdapterCategoria adapterCategoria;
+    private List<Producto> listaProductos = new ArrayList<>();
+    private List<String> listaCategorias = new ArrayList<>();
 
     public static ProductsFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        ProductsFragment fragment = new ProductsFragment();
-        fragment.setArguments(args);
-        return fragment;
+        return new ProductsFragment();
     }
-    /*
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflar el layout para este fragmento
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_products, container, false);
 
-        /*View view = inflater.inflate(R.layout.fragment_products, container, false);
+        rvProductos = view.findViewById(R.id.rvProductos);
+        rvCategorias = view.findViewById(R.id.rvCategorias);
 
-        recyclerView = view.findViewById(R.id.recyclerProductos);
-        btnAgregar = view.findViewById(R.id.btnAgregar);
+        rvProductos.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapterProductos = new ProductoAdapter(getContext(), listaProductos);
+        rvProductos.setAdapter(adapterProductos);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvCategorias.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        adapterCategoria = new AdapterCategoria(listaCategorias, categoriaSeleccionada -> {
+            List<Producto> filtrados = new ArrayList<>();
+            for (Producto p : listaProductos) {
+                if (p.getCategoria().equals(categoriaSeleccionada)) {
+                    filtrados.add(p);
+                }
+            }
+            adapterProductos.setProductos(filtrados);
+            adapterProductos.notifyDataSetChanged();
+        });
+        rvCategorias.setAdapter(adapterCategoria);
+
+        cargarCategorias();
         cargarProductos();
 
-        btnAgregar.setOnClickListener(v -> {
-            // Cambia al fragmento de crear producto
-            //Fragment crearFragment = new CrearProductoFragment();
-            //getActivity().getSupportFragmentManager()
-                    //.beginTransaction()
-                    //.replace(R.id.frameContainer, crearFragment)
-                    //.addToBackStack(null)
-                    //.commit();
-        });
-
         return view;
-
-         */
     }
 
-
-
-/*
-    private void cargarProductos() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("productos")
+    private void cargarCategorias() {
+        FirebaseFirestore.getInstance().collection("categorias")
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Producto> productos = new ArrayList<>();
-                    for (DocumentSnapshot doc : queryDocumentSnapshots) {
-                        Producto p = doc.toObject(Producto.class);
-                        productos.add(p);
+                .addOnSuccessListener(snapshot -> {
+                    listaCategorias.clear();
+                    for (DocumentSnapshot doc : snapshot) {
+                        String nombre = doc.getString("nombre");
+                        if (nombre != null) listaCategorias.add(nombre);
                     }
-                    recyclerView.setAdapter(new ProductoAdapter(productos));
-                })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Error al cargar productos", Toast.LENGTH_SHORT).show());
-    }
+                    adapterCategoria.notifyDataSetChanged();
+                });
     }
 
- */
+    private void cargarProductos() {
+        FirebaseFirestore.getInstance().collection("productos")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    listaProductos.clear();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        Producto producto = doc.toObject(Producto.class);
+                        if (producto != null) listaProductos.add(producto);
+                    }
+                    adapterProductos.setProductos(listaProductos);
+                    adapterProductos.notifyDataSetChanged();
+                });
+    }
+}
 
 

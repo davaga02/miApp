@@ -6,41 +6,48 @@ public class Producto {
 
     private String id;
     private String nombre;
-    private String categoria;
-    private String subcategoria;
     private String descripcion;
+    private String categoria;
     private int stock;
-    private Double precio; // Usado si NO tiene tamaños
-    private Map<String, Double> tamanos; // Usado si SÍ tiene tamaños
+    private Map<String, Double> precios;
+    private String imagenURL;// Usado si SÍ tiene tamaños
+    private boolean esCategoria;
 
 
     public Producto() {
     }
 
-    // Constructor para producto SIN tamaños
-    public Producto(String id, String nombre, String categoria, String subcategoria,
-                    String descripcion, int stock, Double precio) {
+
+    public Producto(String id, String nombre, String descripcion, String categoria, int stock, Map<String, Double> precios, String imagenURL) {
         this.id = id;
         this.nombre = nombre;
-        this.categoria = categoria;
-        this.subcategoria = subcategoria;
         this.descripcion = descripcion;
+        this.categoria = categoria;
         this.stock = stock;
-        this.precio = precio;
+        this.precios = precios;
+        this.imagenURL = imagenURL;
+    }
+    public Producto(String nombre, String categoria, Map<String, Double> precios, String imagenURL, boolean esCategoria) {
+        this.nombre = nombre;
+        this.categoria = categoria;
+        this.precios = precios;
+        this.imagenURL = imagenURL;
+        this.esCategoria = esCategoria;
     }
 
 
-    // Constructor para producto CON tamaños
-    public Producto(String id, String nombre, String categoria, String subcategoria,
-                    String descripcion, int stock, Map<String, Double> tamanos) {
+    public Producto(String id, String nombre, String descripcion, String categoria, int stock, Map<String, Double> precios, String imagenURL,  boolean esCategoria) {
         this.id = id;
         this.nombre = nombre;
-        this.categoria = categoria;
-        this.subcategoria = subcategoria;
         this.descripcion = descripcion;
+        this.categoria = categoria;
         this.stock = stock;
-        this.tamanos = tamanos;
+        this.precios = precios;
+        this.imagenURL = imagenURL;
+        this.esCategoria = esCategoria;
     }
+
+    public boolean esCategoria() { return esCategoria; }
 
     public String getId() {
         return id;
@@ -58,28 +65,20 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public String getSubcategoria() {
-        return subcategoria;
-    }
-
-    public void setSubcategoria(String subcategoria) {
-        this.subcategoria = subcategoria;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public int getStock() {
@@ -90,20 +89,21 @@ public class Producto {
         this.stock = stock;
     }
 
-    public Double getPrecio() {
-        return precio;
+    public Map<String, Double> getPrecios() {
+        return precios;
     }
 
-    public void setPrecio(Double precio) {
-        this.precio = precio;
+
+    public void setPrecios(Map<String, Double> precios) {
+        this.precios = precios;
     }
 
-    public Map<String, Double> getTamanos() {
-        return tamanos;
+    public String getImagenURL() {
+        return imagenURL;
     }
 
-    public void setTamanos(Map<String, Double> tamanos) {
-        this.tamanos = tamanos;
+    public void setImagenURL(String imagenURL) {
+        this.imagenURL = imagenURL;
     }
 }
 
