@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.daniela.miapp.fragment.DetalleProductoFragment;
 import com.google.firebase.firestore.*;
 import java.util.*;
 
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> Log.e("Firestore", "Error cargando productos", e));
     }
 
-    private void mostrarCategoriasConProductos(Map<String, List<Producto>> mapa)  {
+    private void mostrarCategoriasConProductos(Map<String, List<Producto>> mapa) {
         contenedorCategorias.removeAllViews();
 
         for (Map.Entry<String, List<Producto>> entry : mapa.entrySet()) {
@@ -90,15 +92,22 @@ public class MainActivity extends AppCompatActivity {
             ProductoAdapter adapter = new ProductoAdapter(MainActivity.this, productos, new ProductoAdapter.OnProductoClickListener() {
                 @Override
                 public void onProductoClick(Producto producto) {
-                    // Abre la pantalla de detalles
-                    Intent intent = new Intent(MainActivity.this, DetalleProductoActivity.class);
-                    intent.putExtra("producto", producto);
-                    startActivity(intent);
+                    DetalleProductoFragment fragment = new DetalleProductoFragment();
+                    Bundle args = new Bundle();
+                    args.putParcelable("producto", producto); // ✅ Usar Parcelable
+
+                    fragment.setArguments(args);
+
+                    ((AppCompatActivity) MainActivity.this).getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.frameContainer, fragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
             });
             rv.setAdapter(adapter);
-
             contenedorCategorias.addView(rv);
         }
     }
 }
+

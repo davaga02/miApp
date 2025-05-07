@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.daniela.miapp.fragment.DetalleProductoFragment;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -31,9 +32,16 @@ public class ProductosActivity extends AppCompatActivity {
             @Override
             public void onProductoClick(Producto producto) {
                 // Abre la pantalla de detalles
-                Intent intent = new Intent(ProductosActivity.this, DetalleProductoActivity.class);
-                intent.putExtra("producto", producto);
-                startActivity(intent);
+                DetalleProductoFragment fragment = new DetalleProductoFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("producto", producto); // tu clase Producto ya implementa Parcelable
+                fragment.setArguments(args);
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.frameContainer, fragment) // Asegúrate de tener un contenedor con este ID
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         recyclerView.setAdapter(adapter);

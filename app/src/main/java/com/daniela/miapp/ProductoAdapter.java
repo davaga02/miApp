@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHolder> {
 
-    private Context context;
+    private AppCompatActivity activity;
     private List<Producto> productos;
     private OnProductoClickListener listener;
 
@@ -26,8 +27,8 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         void onProductoClick(Producto producto);
     }
 
-    public ProductoAdapter(Context context, List<Producto> productos, OnProductoClickListener listener) {
-        this.context = context;
+    public ProductoAdapter(AppCompatActivity activity, List<Producto> productos, OnProductoClickListener listener) {
+        this.activity = activity;
         this.productos = productos;
         this.listener = listener;
     }
@@ -40,7 +41,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item_producto, parent, false);
+        View v = LayoutInflater.from(activity).inflate(R.layout.item_producto, parent, false);
         return new ViewHolder(v);
     }
 
@@ -49,7 +50,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         Producto p = productos.get(position);
         holder.tvNombre.setText(p.getNombre());
 
-        Glide.with(context)
+        Glide.with(activity)
                 .load(p.getImagenURL())
                 .placeholder(R.drawable.placeholder)
                 .into(holder.ivProducto);

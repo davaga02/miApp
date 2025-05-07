@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daniela.miapp.AdapterCategoria;
-import com.daniela.miapp.DetalleProductoActivity;
 import com.daniela.miapp.Producto;
 import com.daniela.miapp.ProductoAdapter;
 import com.daniela.miapp.R;
@@ -23,7 +23,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductsFragment extends Fragment {
 
@@ -46,10 +48,17 @@ public class ProductsFragment extends Fragment {
         rvCategorias = view.findViewById(R.id.rvCategorias);
 
         rvProductos.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columnas;
-        adapterProductos = new ProductoAdapter(getContext(), listaProductos, producto -> {
-            Intent intent = new Intent(getContext(), DetalleProductoActivity.class);
-            intent.putExtra("producto", producto);  // Producto debe ser Serializable o Parcelable
-            startActivity(intent);
+        adapterProductos = new ProductoAdapter((AppCompatActivity) requireActivity(), listaProductos, producto -> {
+            DetalleProductoFragment fragment = new DetalleProductoFragment();
+            Bundle args = new Bundle();
+            args.putParcelable("producto", producto); // ESTO es correcto
+            fragment.setArguments(args);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
         rvProductos.setAdapter(adapterProductos);
         rvProductos.setAdapter(adapterProductos);
@@ -98,6 +107,13 @@ public class ProductsFragment extends Fragment {
                     listaProductos.clear();
                     for (DocumentSnapshot doc : snapshot) {
                         Producto producto = doc.toObject(Producto.class);
+
+                        // ✅ Validación para asegurar que siempre tenga al menos un precio
+                        if (producto != null && (producto.getPrecios() == null || producto.getPrecios().isEmpty())) {
+                            Map<String, Double> preciosDefault = new HashMap<>();
+                            preciosDefault.put("único", 0.0);
+                            producto.setPrecios(preciosDefault);
+                        }
                         if (producto != null) listaProductos.add(producto);
                     }
                     adapterProductos.setProductos(listaProductos); // Muestra todos por defecto
