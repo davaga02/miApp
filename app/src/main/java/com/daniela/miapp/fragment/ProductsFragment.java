@@ -108,13 +108,41 @@ public class ProductsFragment extends Fragment {
                     for (DocumentSnapshot doc : snapshot) {
                         Producto producto = doc.toObject(Producto.class);
 
-                        // ✅ Validación para asegurar que siempre tenga al menos un precio
-                        if (producto != null && (producto.getPrecios() == null || producto.getPrecios().isEmpty())) {
-                            Map<String, Double> preciosDefault = new HashMap<>();
-                            preciosDefault.put("único", 0.0);
-                            producto.setPrecios(preciosDefault);
+                        if (producto != null) {
+                            // Validar nombre
+                            if (producto.getNombre() == null) {
+                                producto.setNombre("Sin nombre");
+                            }
+
+                            // Validar descripción
+                            if (producto.getDescripcion() == null) {
+                                producto.setDescripcion("Sin descripción");
+                            }
+
+                            // Validar categoría
+                            if (producto.getCategoria() == null) {
+                                producto.setCategoria("Sin categoría");
+                            }
+
+                            // Validar stock
+                            if (producto.getStock() < 0) {
+                                producto.setStock(0);
+                            }
+
+                            // Validar precios
+                            if (producto.getPrecios() == null || producto.getPrecios().isEmpty()) {
+                                Map<String, Double> preciosDefault = new HashMap<>();
+                                preciosDefault.put("único", 0.0);
+                                producto.setPrecios(preciosDefault);
+                            }
+
+                            // Validar imagenURL
+                            if (producto.getImagenURL() == null) {
+                                producto.setImagenURL(""); // o una URL por defecto
+                            }
+
+                            listaProductos.add(producto);
                         }
-                        if (producto != null) listaProductos.add(producto);
                     }
                     adapterProductos.setProductos(listaProductos); // Muestra todos por defecto
                     adapterProductos.notifyDataSetChanged();

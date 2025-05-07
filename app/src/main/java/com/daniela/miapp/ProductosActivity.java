@@ -13,7 +13,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ProductosActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -56,7 +58,24 @@ public class ProductosActivity extends AppCompatActivity {
                     productos.clear();
                     for (DocumentSnapshot doc : queryDocumentSnapshots) {
                         Producto p = doc.toObject(Producto.class);
-                        productos.add(p);
+
+                        if (p != null) {
+                            // Validaciones para evitar null y errores
+                            if (p.getNombre() == null) p.setNombre("Sin nombre");
+                            if (p.getDescripcion() == null) p.setDescripcion("Sin descripción");
+                            if (p.getCategoria() == null) p.setCategoria("Sin categoría");
+                            if (p.getStock() < 0) p.setStock(0);
+
+                            if (p.getPrecios() == null || p.getPrecios().isEmpty()) {
+                                Map<String, Double> preciosDefault = new HashMap<>();
+                                preciosDefault.put("único", 0.0);
+                                p.setPrecios(preciosDefault);
+                            }
+
+                            if (p.getImagenURL() == null) p.setImagenURL("");
+
+                            productos.add(p);
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 })

@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         cargarProductosAgrupadosPorCategoria();
     }
-
     private void cargarProductosAgrupadosPorCategoria() {
         db.collection("productos")
                 .get()
@@ -39,13 +38,20 @@ public class MainActivity extends AppCompatActivity {
                     Map<String, List<Producto>> mapa = new HashMap<>();
 
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        // Asignar valores con validación de nulls
                         String nombre = doc.getString("nombre");
-                        String categoria = doc.getString("categoria");
-                        String imagenURL = doc.getString("imagenURL");
+                        if (nombre == null) nombre = "Sin nombre";
 
+                        String categoria = doc.getString("categoria");
+                        if (categoria == null) categoria = "Sin categoría";
+
+                        String imagenURL = doc.getString("imagenURL");
+                        if (imagenURL == null) imagenURL = "";
+
+                        // Procesar precios
                         Map<String, Double> precios = new HashMap<>();
                         Map<String, Object> preciosRaw = (Map<String, Object>) doc.get("precios");
-                        if (preciosRaw != null) {
+                        if (preciosRaw != null && !preciosRaw.isEmpty()) {
                             for (Map.Entry<String, Object> entry : preciosRaw.entrySet()) {
                                 try {
                                     precios.put(entry.getKey(), Double.parseDouble(entry.getValue().toString()));
@@ -53,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
                                     Log.w("ParseError", "Error al convertir precio", e);
                                 }
                             }
+                        } else {
+                            precios.put("único", 0.0); // Valor por defecto
                         }
 
                         Producto producto = new Producto(nombre, categoria, precios, imagenURL, false);
