@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bottom_nav_item_background"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvMesa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mesa: 5"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tvEstado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estado: En preparación"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvFecha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fecha: 2025-05-06"
+        android:textSize="14sp" />
+</LinearLayout>

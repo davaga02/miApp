@@ -83,8 +83,6 @@ public class PrincipalAdminActivity extends AppCompatActivity {
                     selectedFragment = ProductsFragment.newInstance();
                 } else if (itemId == R.id.nav_profile) {
                     selectedFragment = ProfileFragment.newInstance();
-                } else if (itemId == R.id.nav_employees) {
-                    selectedFragment = EmployeesFragment.newInstance();
                 }
 
                 // Cargar el fragmento correspondiente

@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.daniela.miapp.fragment.InicioEmpleadoFragment;
-import com.daniela.miapp.fragment.PedidosEmpleadoFragment;
+import com.daniela.miapp.fragment.PedidosFragment;
 import com.daniela.miapp.fragment.PerfilEmpleadoFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -39,7 +39,7 @@ public class PrincipalEmpleadoActivity extends AppCompatActivity {
             if (itemId == R.id.nav_inicio) {
                 selectedFragment = new InicioEmpleadoFragment();
             } else if (itemId == R.id.nav_pedidos) {
-                selectedFragment = new PedidosEmpleadoFragment();
+                selectedFragment = new PedidosFragment();
             } else if (itemId == R.id.nav_perfil) {
                 selectedFragment = new PerfilEmpleadoFragment();
             }
@@ -47,7 +47,7 @@ public class PrincipalEmpleadoActivity extends AppCompatActivity {
             if (selectedFragment != null) {
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.frameContainerEmpleado, selectedFragment)
+                        .replace(R.id.frameContainer, selectedFragment)
                         .commit();
             }
 
