@@ -4,14 +4,16 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Pedido implements Parcelable {
     private String id;
     private String usuario;
     private String mesa;
-    private Map<String, Integer> productos; // ID del producto y cantidad
+    private List<Map<String, Object>> productos; // ID del producto y cantidad
     private String estado;
     private long timestamp;
 
@@ -19,7 +21,8 @@ public class Pedido implements Parcelable {
         // Requerido por Firestore
     }
 
-    public Pedido(String id, String usuario, String mesa, Map<String, Integer> productos, String estado, long timestamp) {
+
+    public Pedido(String id, String usuario, String mesa, List<Map<String, Object>> productos, String estado, long timestamp) {
         this.id = id;
         this.usuario = usuario;
         this.mesa = mesa;
@@ -42,9 +45,7 @@ public class Pedido implements Parcelable {
 
     public void setMesa(String mesa) { this.mesa = mesa; }
 
-    public Map<String, Integer> getProductos() { return productos; }
 
-    public void setProductos(Map<String, Integer> productos) { this.productos = productos; }
 
     public String getEstado() { return estado; }
 
@@ -63,13 +64,8 @@ public class Pedido implements Parcelable {
         estado = in.readString();
         timestamp = in.readLong();
 
-        productos = new HashMap<>();
-        Bundle bundle = in.readBundle(getClass().getClassLoader());
-        if (bundle != null) {
-            for (String key : bundle.keySet()) {
-                productos.put(key, bundle.getInt(key));
-            }
-        }
+        productos = new ArrayList<>();
+        in.readList(productos, Map.class.getClassLoader());
     }
 
     @Override
@@ -80,13 +76,7 @@ public class Pedido implements Parcelable {
         dest.writeString(estado);
         dest.writeLong(timestamp);
 
-        Bundle bundle = new Bundle();
-        if (productos != null) {
-            for (Map.Entry<String, Integer> entry : productos.entrySet()) {
-                bundle.putInt(entry.getKey(), entry.getValue());
-            }
-        }
-        dest.writeBundle(bundle);
+        dest.writeList(productos);
     }
 
     @Override
@@ -107,4 +97,11 @@ public class Pedido implements Parcelable {
     };
 
 
+    public List<Map<String, Object>> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Map<String, Object>> productos) {
+        this.productos = productos;
+    }
 }

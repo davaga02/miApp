@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.daniela.miapp.Pedido;
 import com.daniela.miapp.Producto;
+import com.daniela.miapp.ProductoSeleccionado;
 import com.daniela.miapp.R;
 import com.daniela.miapp.adapter.ProductoPedidoAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,11 +27,16 @@ public class CrearPedidoFragment extends Fragment {
     private Spinner spinnerMesas;
     private RecyclerView recyclerProductos;
     private Button btnConfirmarPedido;
+    private SearchView searchView;
+    private Spinner spinnerCategorias;
+    private List<Producto> listaOriginal = new ArrayList<>();
 
     private ProductoPedidoAdapter adapter;
     private FirebaseFirestore db;
 
+    private List<Map<String, Object>> productos;
     private List<Producto> listaProductos = new ArrayList<>();
+    private Map<String, List<String>> mapaSabores = new HashMap<>();
 
     @Nullable
     @Override
@@ -46,6 +52,9 @@ public class CrearPedidoFragment extends Fragment {
         btnConfirmarPedido = view.findViewById(R.id.btnConfirmarPedido);
         db = FirebaseFirestore.getInstance();
 
+        spinnerCategorias = view.findViewById(R.id.spinnerCategorias);
+        searchView = view.findViewById(R.id.searchViewProducto);
+
         // Llenar el spinner de mesas (ejemplo: Mesa 1 a Mesa 10)
         List<String> mesas = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -55,11 +64,57 @@ public class CrearPedidoFragment extends Fragment {
         adapterMesa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerMesas.setAdapter(adapterMesa);
 
+
+        List<String> categorias = new ArrayList<>();
+        ArrayAdapter<String> adapterCat = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, categorias);
+        adapterCat.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCategorias.setAdapter(adapterCat);
+
+// Cargar categorías desde Firestore
+        db.collection("categorias")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    categorias.clear();
+                    categorias.add("Todas"); // Opción por defecto
+
+                    for (DocumentSnapshot doc : snapshot) {
+                        String nombre = doc.getString("nombre");
+                        if (nombre != null && !nombre.isEmpty()) {
+                            categorias.add(nombre);
+                        }
+                    }
+
+                    adapterCat.notifyDataSetChanged();
+                });
+        spinnerCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filtrarProductos();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filtrarProductos();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filtrarProductos();
+                return true;
+            }
+        });
+
         // Configurar RecyclerView
         recyclerProductos.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new ProductoPedidoAdapter(listaProductos);
         recyclerProductos.setAdapter(adapter);
 
+        cargarSabores(); // ✅ AQUÍ: cargar los sabores desde Firestore
         cargarProductosDesdeFirestore();
 
         btnConfirmarPedido.setOnClickListener(v -> {
@@ -67,13 +122,16 @@ public class CrearPedidoFragment extends Fragment {
             String usuarioId = FirebaseAuth.getInstance().getCurrentUser() != null ?
                     FirebaseAuth.getInstance().getCurrentUser().getUid() : "empleado";
 
-            Map<String, Integer> productosSeleccionados = adapter.getCantidadesSeleccionadas();
+            List<Map<String, Object>> productosFinal = new ArrayList<>();
 
-            // Filtrar productos con cantidad > 0
-            Map<String, Integer> productosFinal = new HashMap<>();
-            for (Map.Entry<String, Integer> entry : productosSeleccionados.entrySet()) {
-                if (entry.getValue() > 0) {
-                    productosFinal.put(entry.getKey(), entry.getValue());
+            for (ProductoSeleccionado ps : adapter.getSeleccionados().values()) {
+                if (ps.getCantidad() > 0) {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", ps.getProductoId());
+                    item.put("cantidad", ps.getCantidad());
+                    if (ps.getTamaño() != null) item.put("tamaño", ps.getTamaño());
+                    if (ps.getSabor() != null) item.put("sabor", ps.getSabor());
+                    productosFinal.add(item);
                 }
             }
 
@@ -120,6 +178,40 @@ public class CrearPedidoFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "Error al cargar productos", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void filtrarProductos() {
+        String categoriaSeleccionada = (String) spinnerCategorias.getSelectedItem();
+        String textoBusqueda = searchView.getQuery().toString().toLowerCase();
+
+        List<Producto> filtrados = new ArrayList<>();
+        for (Producto p : listaProductos) {
+            boolean coincideCategoria = categoriaSeleccionada.equals("Todas") || p.getCategoria().equalsIgnoreCase(categoriaSeleccionada);
+            boolean coincideTexto = p.getNombre().toLowerCase().contains(textoBusqueda);
+            if (coincideCategoria && coincideTexto) {
+                filtrados.add(p);
+            }
+        }
+
+        adapter.setProductos(filtrados);
+        adapter.notifyDataSetChanged();
+    }
+
+
+    private void cargarSabores() {
+        db.collection("sabores")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    mapaSabores.clear();
+                    for (DocumentSnapshot doc : snapshot) {
+                        String nombre = doc.getString("nombre");
+                        String categoria = doc.getString("categoria");
+                        if (nombre != null && categoria != null) {
+                            mapaSabores.computeIfAbsent(categoria, k -> new ArrayList<>()).add(nombre);
+                        }
+                    }
+                    adapter.setMapaSabores(mapaSabores);
                 });
     }
 }

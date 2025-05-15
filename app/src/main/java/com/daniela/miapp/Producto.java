@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Producto implements Parcelable {
@@ -18,6 +19,8 @@ public class Producto implements Parcelable {
     private Map<String, Double> precios;
     private String imagenURL;
     private boolean esCategoria;
+    private boolean requiereSabor;       // true si necesita elegir un sabor
+    private List<String> sabores;        // Lista de sabores disponibles
 
     public Producto() {}
 
@@ -56,6 +59,20 @@ public class Producto implements Parcelable {
             }
         }
     }
+
+    public Producto(String id, String nombre, String descripcion, String categoria, int stock, Map<String, Double> precios, String imagenURL, boolean esCategoria, boolean requiereSabor, List<String> sabores) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.categoria = categoria;
+        this.stock = stock;
+        this.precios = precios;
+        this.imagenURL = imagenURL;
+        this.esCategoria = esCategoria;
+        this.requiereSabor = requiereSabor;
+        this.sabores = sabores;
+    }
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -124,4 +141,23 @@ public class Producto implements Parcelable {
     public String getImagenURL() { return imagenURL; }
 
     public void setImagenURL(String imagenURL) { this.imagenURL = imagenURL; }
+
+    public boolean isRequiereSabor() { return requiereSabor; }
+    public List<String> getSabores() { return sabores; }
+
+    public boolean isEsCategoria() {
+        return esCategoria;
+    }
+
+    public void setEsCategoria(boolean esCategoria) {
+        this.esCategoria = esCategoria;
+    }
+
+    public void setRequiereSabor(boolean requiereSabor) {
+        this.requiereSabor = requiereSabor;
+    }
+
+    public void setSabores(List<String> sabores) {
+        this.sabores = sabores;
+    }
 }

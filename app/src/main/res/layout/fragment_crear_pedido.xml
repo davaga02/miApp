@@ -1,41 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FEF4F0">
 
-    <TextView
-        android:text="Selecciona una mesa:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold" />
-
-    <Spinner
-        android:id="@+id/spinnerMesas"
+    <!-- Barra de búsqueda -->
+    <SearchView
+        android:id="@+id/searchViewProducto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:queryHint="Buscar producto"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rounded_input" />
 
-    <TextView
-        android:text="Selecciona productos:"
-        android:layout_width="wrap_content"
+    <!-- Spinner de categorías -->
+    <Spinner
+        android:id="@+id/spinnerCategorias"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold" />
+        android:background="@drawable/rounded_spinner"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
 
+    <!-- Lista de productos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerProductosPedido"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="12dp" />
 
+    <!-- Spinner de mesas -->
+    <Spinner
+        android:id="@+id/spinnerMesas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_spinner"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Botón de confirmación -->
     <Button
         android:id="@+id/btnConfirmarPedido"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:text="Confirmar pedido"
-        android:backgroundTint="@color/e34a35"
-        android:textColor="@color/white" />
-
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:backgroundTint="#E34A35"
+        android:fontFamily="@font/baloo"
+        app:cornerRadius="12dp" />
 </LinearLayout>
