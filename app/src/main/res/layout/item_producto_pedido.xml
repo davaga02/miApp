@@ -4,93 +4,123 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    android:backgroundTint="#FFFFFF"
     app:cardCornerRadius="16dp"
     app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
-        android:background="#FEF4F0">
+        android:orientation="horizontal"
+        android:background="#FEF4F0"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/tvNombreProducto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre del producto"
-            android:textSize="20sp"
-            android:textColor="#E34A35"
-            android:textStyle="bold"
-            android:fontFamily="@font/baloo"
-            android:layout_marginBottom="12dp" />
+        <!-- Imagen a la izquierda -->
+        <ImageView
+            android:id="@+id/imgProducto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/rounded_image" />
 
-        <Spinner
-            android:id="@+id/spinnerTamaño"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@drawable/rounded_spinner"
-            android:layout_marginBottom="8dp" />
-
-        <Spinner
-            android:id="@+id/spinnerSabor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@drawable/rounded_spinner"
-            android:layout_marginBottom="8dp" />
-
+        <!-- Contenido principal al centro -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="8dp">
-
-            <Button
-                android:id="@+id/btnRestar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="−"
-                android:textSize="18sp"
-                android:backgroundTint="#F3B3CD"
-                android:textColor="#FFFFFF"
-                app:cornerRadius="8dp" />
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvCantidad"
-                android:layout_width="50dp"
+                android:id="@+id/tvNombreProducto"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="0"
-                android:textColor="#3E3E3E"
-                android:textSize="16sp"
-                android:layout_marginHorizontal="8dp"
-                android:fontFamily="@font/baloo" />
+                android:text="Nombre del producto"
+                android:textSize="18sp"
+                android:textColor="#E34A35"
+                android:textStyle="bold"
+                android:fontFamily="@font/baloo"
+                android:layout_marginBottom="4dp" />
+
+            <Spinner
+                android:id="@+id/spinnerTamaño"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@drawable/rounded_spinner"
+                android:layout_marginBottom="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerSabor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@drawable/rounded_spinner"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageButton
+                    android:id="@+id/btnRestar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:backgroundTint="#F3B3CD"
+                    android:background="@drawable/rounded_button"
+                    android:src="@drawable/ic_remove"
+                    android:contentDescription="Restar"
+                    app:tint="#F3B3CD"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/tvCantidad"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="#3E3E3E"
+                    android:textSize="16sp"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/baloo" />
+
+                <ImageButton
+                    android:id="@+id/btnSumar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:backgroundTint="#F3B3CD"
+                    android:background="@drawable/rounded_button"
+                    android:src="@drawable/ic_add"
+                    android:contentDescription="Sumar"
+                    app:tint="#F3B3CD"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
 
             <Button
-                android:id="@+id/btnSumar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="+"
-                android:textSize="18sp"
-                android:backgroundTint="#F3B3CD"
+                android:id="@+id/btnAgregarProducto"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Añadir al pedido"
                 android:textColor="#FFFFFF"
-                app:cornerRadius="8dp" />
+                android:textSize="16sp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#E34A35"
+                app:cornerRadius="12dp"
+                android:fontFamily="@font/baloo" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnAgregarProducto"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Añadir al pedido"
-            android:layout_marginTop="12dp"
-            android:textColor="#FFFFFF"
+        <!-- Precio a la derecha -->
+        <TextView
+            android:id="@+id/tvPrecioProducto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2.50€"
+            android:textColor="#3E3E3E"
             android:textSize="16sp"
-            android:backgroundTint="#E34A35"
-            app:cornerRadius="12dp"
-            android:fontFamily="@font/baloo" />
+            android:textStyle="bold"
+            android:fontFamily="@font/baloo"
+            android:layout_gravity="top" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+

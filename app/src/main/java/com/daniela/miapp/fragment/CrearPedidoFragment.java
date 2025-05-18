@@ -1,6 +1,7 @@
 package com.daniela.miapp.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ public class CrearPedidoFragment extends Fragment {
     private SearchView searchView;
     private Spinner spinnerCategorias;
     private List<Producto> listaOriginal = new ArrayList<>();
+    private TextView tvTotal;
 
     private ProductoPedidoAdapter adapter;
     private FirebaseFirestore db;
@@ -54,6 +56,9 @@ public class CrearPedidoFragment extends Fragment {
 
         spinnerCategorias = view.findViewById(R.id.spinnerCategorias);
         searchView = view.findViewById(R.id.searchViewProducto);
+
+        tvTotal = view.findViewById(R.id.tvTotal);
+
 
         // Llenar el spinner de mesas (ejemplo: Mesa 1 a Mesa 10)
         List<String> mesas = new ArrayList<>();
@@ -116,6 +121,7 @@ public class CrearPedidoFragment extends Fragment {
 
         cargarSabores(); // ✅ AQUÍ: cargar los sabores desde Firestore
         cargarProductosDesdeFirestore();
+        adapter.setOnCambioCantidadListener(this::actualizarTotal);
 
         btnConfirmarPedido.setOnClickListener(v -> {
             String mesaSeleccionada = (String) spinnerMesas.getSelectedItem();
@@ -126,12 +132,32 @@ public class CrearPedidoFragment extends Fragment {
 
             for (ProductoSeleccionado ps : adapter.getSeleccionados().values()) {
                 if (ps.getCantidad() > 0) {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("id", ps.getProductoId());
-                    item.put("cantidad", ps.getCantidad());
-                    if (ps.getTamaño() != null) item.put("tamaño", ps.getTamaño());
-                    if (ps.getSabor() != null) item.put("sabor", ps.getSabor());
-                    productosFinal.add(item);
+                    Producto producto = buscarProductoPorId(ps.getProductoId());
+                    if (producto != null) {
+                        Map<String, Object> item = new HashMap<>();
+                        item.put("id", producto.getId());
+                        item.put("nombre", producto.getNombre());
+                        item.put("cantidad", ps.getCantidad());
+
+                        double precioUnitario = 0.0;
+                        if (producto.getPrecios() != null) {
+                            if (ps.getTamaño() != null && producto.getPrecios().containsKey(ps.getTamaño())) {
+                                precioUnitario = producto.getPrecios().get(ps.getTamaño());
+                            } else if (producto.getPrecios().containsKey("único")) {
+                                precioUnitario = producto.getPrecios().get("único");
+                            }
+                        }
+
+                        double subtotal = precioUnitario * ps.getCantidad();
+
+                        item.put("precioUnitario", precioUnitario);
+                        item.put("subtotal", subtotal);
+
+                        if (ps.getTamaño() != null) item.put("tamaño", ps.getTamaño());
+                        if (ps.getSabor() != null) item.put("sabor", ps.getSabor());
+
+                        productosFinal.add(item);
+                    }
                 }
             }
 
@@ -160,6 +186,11 @@ public class CrearPedidoFragment extends Fragment {
                             Toast.makeText(requireContext(), "Error al crear pedido", Toast.LENGTH_SHORT).show()
                     );
         });
+
+            Button btnVolver = view.findViewById(R.id.btnVolver);
+            btnVolver.setOnClickListener(v -> {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            });
     }
 
     private void cargarProductosDesdeFirestore() {
@@ -196,6 +227,7 @@ public class CrearPedidoFragment extends Fragment {
 
         adapter.setProductos(filtrados);
         adapter.notifyDataSetChanged();
+        actualizarTotal(); // Vuelve a calcular el total con los seleccionados actuales
     }
 
 
@@ -213,5 +245,48 @@ public class CrearPedidoFragment extends Fragment {
                     }
                     adapter.setMapaSabores(mapaSabores);
                 });
+    }
+
+    private String obtenerNombreProductoPorId(String id) {
+        for (Producto p : listaProductos) {
+            if (p.getId().equals(id)) {
+                return p.getNombre();
+            }
+        }
+        return id; // Fallback
+    }
+
+    private Producto buscarProductoPorId(String id) {
+        for (Producto p : listaProductos) {
+            if (p.getId().equals(id)) return p;
+        }
+        return null;
+    }
+
+    private void actualizarTotal() {
+        double total = 0.0;
+
+        for (ProductoSeleccionado ps : adapter.getSeleccionados().values()) {
+            if (ps.getCantidad() > 0) {
+                Producto producto = buscarProductoPorId(ps.getProductoId());
+                if (producto != null) {
+                    double precioUnitario = 0.0;
+
+                    if (producto.getPrecios() != null) {
+                        String tamaño = ps.getTamaño();
+                        if (tamaño != null && producto.getPrecios().containsKey(tamaño)) {
+                            precioUnitario = producto.getPrecios().get(tamaño);
+                        } else if (producto.getPrecios().containsKey("único")) {
+                            precioUnitario = producto.getPrecios().get("único");
+                        }
+                    }
+
+                    total += ps.getCantidad() * precioUnitario;
+                }
+            }
+        }
+
+        tvTotal.setText(String.format("Total: %.2f€", total));
+        Log.d("TOTAL_DEBUG", "Productos seleccionados: " + adapter.getSeleccionados().size());
     }
 }

@@ -9,6 +9,7 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.daniela.miapp.Producto;
 import com.daniela.miapp.ProductoSeleccionado;
 import com.daniela.miapp.R;
@@ -34,6 +35,16 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
         return seleccionados;
     }
 
+    public interface OnCambioCantidadListener {
+        void onCambio();
+    }
+
+    private OnCambioCantidadListener listener;
+
+    public void setOnCambioCantidadListener(OnCambioCantidadListener l) {
+        this.listener = l;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,27 +57,45 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
         Producto producto = productos.get(position);
         holder.tvNombre.setText(producto.getNombre());
 
-        // Cantidad inicial en 0
-        holder.tvCantidad.setText("0");
+        // Cantidad inicial
+        ProductoSeleccionado psGuardado = seleccionados.get(producto.getId());
+        int cantidadGuardada = psGuardado != null ? psGuardado.getCantidad() : 0;
+        holder.tvCantidad.setText(String.valueOf(cantidadGuardada));
 
-        // Configurar tamaño si aplica
+        // 🔹 Configurar tamaño si aplica
         if (producto.getPrecios() != null && producto.getPrecios().size() > 1) {
             holder.spinnerTamaño.setVisibility(View.VISIBLE);
             List<String> tamaños = new ArrayList<>(producto.getPrecios().keySet());
-            ArrayAdapter<String> adapterTamaño = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, tamaños);
+            ArrayAdapter<String> adapterTamaño = new ArrayAdapter<>(holder.itemView.getContext(),
+                    android.R.layout.simple_spinner_item, tamaños);
             adapterTamaño.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             holder.spinnerTamaño.setAdapter(adapterTamaño);
+
+            // Restaurar selección de tamaño
+            if (psGuardado != null && psGuardado.getTamaño() != null) {
+                int index = adapterTamaño.getPosition(psGuardado.getTamaño());
+                if (index >= 0) holder.spinnerTamaño.setSelection(index);
+            }
+
         } else {
             holder.spinnerTamaño.setVisibility(View.GONE);
         }
 
-        // Configurar sabor si aplica
+        // 🔹 Configurar sabor si aplica
         if (producto.isRequiereSabor()) {
             holder.spinnerSabor.setVisibility(View.VISIBLE);
             List<String> sabores = mapaSabores.getOrDefault(producto.getCategoria(), new ArrayList<>());
-            ArrayAdapter<String> adapterSabor = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, sabores);
+            ArrayAdapter<String> adapterSabor = new ArrayAdapter<>(holder.itemView.getContext(),
+                    android.R.layout.simple_spinner_item, sabores);
             adapterSabor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             holder.spinnerSabor.setAdapter(adapterSabor);
+
+            // Restaurar selección de sabor
+            if (psGuardado != null && psGuardado.getSabor() != null) {
+                int index = adapterSabor.getPosition(psGuardado.getSabor());
+                if (index >= 0) holder.spinnerSabor.setSelection(index);
+            }
+
         } else {
             holder.spinnerSabor.setVisibility(View.GONE);
         }
@@ -84,6 +113,30 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             holder.tvCantidad.setText(String.valueOf(cantidad));
         });
 
+        Double precio = 0.0;
+        if (producto.getPrecios() != null) {
+            if (producto.getPrecios().containsKey("único")) {
+                precio = producto.getPrecios().get("único");
+            } else if (!producto.getPrecios().isEmpty()) {
+                precio = new ArrayList<>(producto.getPrecios().values()).get(0);
+            }
+        }
+        if (precio != null) {
+            holder.tvPrecioProducto.setText(String.format("%.2f€", precio));
+        }
+
+        if (producto.getImagenURL() != null && !producto.getImagenURL().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(producto.getImagenURL())
+                    .placeholder(R.drawable.placeholder) // imagen por defecto
+                    .error(R.drawable.placeholder)       // si falla la carga
+                    .into(holder.imgProducto);
+        } else {
+            // Si no hay imagen, ponemos el placeholder por defecto
+            holder.imgProducto.setImageResource(R.drawable.placeholder);
+        }
+
+
         // Escucha cambios en cantidad
         holder.tvCantidad.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -93,7 +146,7 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             }
         });
 
-        // Escucha cambios en tamaño
+        // Escucha cambios en tamaño y sabor
         holder.spinnerTamaño.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 actualizarSeleccion(producto, holder);
@@ -101,7 +154,6 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Escucha cambios en sabor
         holder.spinnerSabor.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 actualizarSeleccion(producto, holder);
@@ -109,7 +161,7 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // Boton agregar al pedido
+        // Botón agregar producto
         holder.btnAgregarProducto.setOnClickListener(v -> {
             int cantidad;
             try {
@@ -123,9 +175,7 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
                 return;
             }
 
-            // Ya se guarda automáticamente, pero puedes reforzarlo
             actualizarSeleccion(producto, holder);
-
             Toast.makeText(holder.itemView.getContext(), "✅ Producto añadido correctamente", Toast.LENGTH_SHORT).show();
         });
     }
@@ -148,6 +198,9 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
         if (producto.isRequiereSabor()) {
             sabor = (String) holder.spinnerSabor.getSelectedItem();
         }
+        if (listener != null) {
+            listener.onCambio();
+        }
 
         ProductoSeleccionado seleccionado = new ProductoSeleccionado(producto.getId(), cantidad, tamaño, sabor);
         seleccionados.put(producto.getId(), seleccionado);
@@ -160,9 +213,11 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvNombre, tvCantidad;
-        Button btnSumar, btnRestar;
+        ImageButton btnSumar, btnRestar;
         Spinner spinnerTamaño, spinnerSabor;
         Button btnAgregarProducto;
+        TextView tvPrecioProducto;
+        ImageView imgProducto;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -173,6 +228,8 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             spinnerTamaño = itemView.findViewById(R.id.spinnerTamaño);
             spinnerSabor = itemView.findViewById(R.id.spinnerSabor);
             btnAgregarProducto = itemView.findViewById(R.id.btnAgregarProducto);
+            tvPrecioProducto = itemView.findViewById(R.id.tvPrecioProducto);
+            imgProducto = itemView.findViewById(R.id.imgProducto);
         }
     }
 

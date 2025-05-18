@@ -18,6 +18,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
 
     private List<Pedido> pedidos;
 
+
     public PedidoAdapter(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }
@@ -36,20 +37,36 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
         holder.tvEstado.setText("Estado: " + pedido.getEstado());
 
         // ➕ Formatear timestamp a fecha legible
+
         Date fecha = new Date(pedido.getTimestamp());
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy - HH:mm", Locale.getDefault());
-        String fechaFormateada = sdf.format(fecha);
-        holder.tvFechaHora.setText(fechaFormateada);
+        holder.tvFechaHora.setText(sdf.format(fecha));
 
         StringBuilder productosTexto = new StringBuilder();
+        double total = 0.0;
+
         for (Map<String, Object> p : pedido.getProductos()) {
             String nombre = (String) p.get("nombre");
             Long cantidad = (Long) p.get("cantidad");
-            productosTexto.append("• ")
+            String tamaño = (String) p.get("tamaño");
+            String sabor = (String) p.get("sabor");
+
+            StringBuilder linea = new StringBuilder("• ")
                     .append(nombre != null ? nombre : p.get("id"))
-                    .append(" x").append(cantidad).append("\n");
+                    .append(" x").append(cantidad);
+
+            if (tamaño != null) linea.append(" - ").append(tamaño);
+            if (sabor != null) linea.append(" - ").append(sabor);
+
+            Object subtotalObj = p.get("subtotal");
+            if (subtotalObj instanceof Number) {
+                total += ((Number) subtotalObj).doubleValue();
+            }
+
+            productosTexto.append(linea).append("\n");
         }
         holder.tvProductos.setText(productosTexto.toString().trim());
+        holder.tvTotalPedido.setText(String.format("Total: %.2f€", total));
     }
 
     @Override
@@ -58,7 +75,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMesa, tvEstado, tvProductos, tvFechaHora;;
+        TextView tvMesa, tvEstado, tvProductos, tvFechaHora, tvTotalPedido;;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,6 +83,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
             tvEstado = itemView.findViewById(R.id.tvEstado);
             tvProductos = itemView.findViewById(R.id.tvProductos);
             tvFechaHora = itemView.findViewById(R.id.tvFechaHora);
+            tvTotalPedido = itemView.findViewById(R.id.tvTotalPedido);
         }
     }
 
