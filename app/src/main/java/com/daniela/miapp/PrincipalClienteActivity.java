@@ -81,10 +81,6 @@ public class PrincipalClienteActivity extends AppCompatActivity {
 
                 if (itemId == R.id.nav_inicio) {
                     selectedFragment = InicioClienteFragment.newInstance();
-                } else if (itemId == R.id.nav_tienda) {
-                    selectedFragment = TiendaClienteFragment.newInstance();
-                } else if (itemId == R.id.nav_carrito) {
-                    selectedFragment = CarritoClienteFragment.newInstance();
                 } else if (itemId == R.id.nav_pedidos) {
                     selectedFragment = MisPedidosClienteFragment.newInstance();
                 } else if (itemId == R.id.nav_perfil) {
