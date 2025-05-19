@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daniela.miapp.fragment.DetalleProductoFragment;
+import com.daniela.miapp.fragment.PerfilFragment;
 import com.google.firebase.firestore.*;
 import java.util.*;
 
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main); // Asegúrate de que tienes un layout llamado activity_main
+
+
 
         StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                 .detectAll()
