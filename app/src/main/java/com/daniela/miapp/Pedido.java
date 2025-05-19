@@ -16,6 +16,8 @@ public class Pedido implements Parcelable {
     private List<Map<String, Object>> productos; // ID del producto y cantidad
     private String estado;
     private long timestamp;
+    private String nombreUsuario;
+    private String correoUsuario;
 
     public Pedido() {
         // Requerido por Firestore
@@ -54,6 +56,13 @@ public class Pedido implements Parcelable {
     public long getTimestamp() { return timestamp; }
 
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+
+    public String getNombreUsuario() { return nombreUsuario; }
+    public void setNombreUsuario(String nombreUsuario) { this.nombreUsuario = nombreUsuario; }
+
+    public String getCorreoUsuario() { return correoUsuario; }
+    public void setCorreoUsuario(String correoUsuario) { this.correoUsuario = correoUsuario; }
 
     // Parcelable
 

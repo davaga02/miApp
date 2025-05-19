@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.daniela.miapp.fragment.HomeFragment;
 import com.daniela.miapp.fragment.OrdersFragment;
+import com.daniela.miapp.fragment.PedidosFragment;
 import com.daniela.miapp.fragment.PerfilFragment;
 import com.daniela.miapp.fragment.ProductsFragment;
 import com.daniela.miapp.fragment.ProfileFragment;
@@ -80,9 +81,9 @@ public class PrincipalAdminActivity extends AppCompatActivity {
                 if (itemId == R.id.nav_home) {
                     selectedFragment = HomeFragment.newInstance();
                 } else if (itemId == R.id.nav_orders) {
-                    selectedFragment = OrdersFragment.newInstance();
+                    selectedFragment = new PedidosFragment(); // Usa el mismo fragmento
                 } else if (itemId == R.id.nav_products) {
-                    selectedFragment = ProductsFragment.newInstance();
+                    selectedFragment = new ProductsFragment(); // Usa el mismo fragmento
                 }else if (itemId == R.id.nav_profile) {
                     selectedFragment = new PerfilFragment(); // No se pasan datos
                 }

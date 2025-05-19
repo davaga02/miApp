@@ -29,6 +29,14 @@
             android:text="Pendiente"
             android:textColor="#888888"
             android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/tvCreador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Creado por: admin@ejemplo.com"
+            android:textSize="14sp"
+            android:textColor="#888888" />
         <TextView
             android:id="@+id/tvFechaHora"
             android:layout_width="wrap_content"
@@ -37,6 +45,7 @@
             android:textColor="#777777"
             android:textSize="13sp"
             android:layout_marginTop="4dp"/>
+
 
         <TextView
             android:id="@+id/tvProductos"

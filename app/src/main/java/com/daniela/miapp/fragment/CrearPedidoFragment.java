@@ -1,5 +1,7 @@
 package com.daniela.miapp.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import com.daniela.miapp.ProductoSeleccionado;
 import com.daniela.miapp.R;
 import com.daniela.miapp.adapter.ProductoPedidoAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.*;
 
 import java.util.*;
@@ -125,8 +128,15 @@ public class CrearPedidoFragment extends Fragment {
 
         btnConfirmarPedido.setOnClickListener(v -> {
             String mesaSeleccionada = (String) spinnerMesas.getSelectedItem();
-            String usuarioId = FirebaseAuth.getInstance().getCurrentUser() != null ?
-                    FirebaseAuth.getInstance().getCurrentUser().getUid() : "empleado";
+
+            //cambios
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            String usuarioId = currentUser != null ? currentUser.getUid() : "desconocido";
+            String correoUsuario = currentUser != null ? currentUser.getEmail() : "sin_correo";
+
+// Obtén el nombre desde SharedPreferences
+            SharedPreferences prefs = requireContext().getSharedPreferences("MiAppPrefs", Context.MODE_PRIVATE);
+            String nombreUsuario = prefs.getString("nombreUsuario", "Desconocido");
 
             List<Map<String, Object>> productosFinal = new ArrayList<>();
 
@@ -166,7 +176,8 @@ public class CrearPedidoFragment extends Fragment {
                 return;
             }
 
-            Pedido pedido = new Pedido(
+//Cambios
+           Pedido pedido = new Pedido(
                     UUID.randomUUID().toString(),
                     usuarioId,
                     mesaSeleccionada,
@@ -175,9 +186,19 @@ public class CrearPedidoFragment extends Fragment {
                     System.currentTimeMillis()
             );
 
+            Map<String, Object> datosPedido = new HashMap<>();
+            datosPedido.put("id", pedido.getId());
+            datosPedido.put("usuario", usuarioId);
+            datosPedido.put("correoUsuario", correoUsuario);
+            datosPedido.put("nombreUsuario", nombreUsuario);
+            datosPedido.put("mesa", mesaSeleccionada);
+            datosPedido.put("productos", productosFinal);
+            datosPedido.put("estado", "Pendiente");
+            datosPedido.put("timestamp", System.currentTimeMillis());
+
             db.collection("pedidos")
                     .document(pedido.getId())
-                    .set(pedido)
+                    .set(datosPedido)
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(requireContext(), "Pedido creado", Toast.LENGTH_SHORT).show();
                         requireActivity().getSupportFragmentManager().popBackStack();

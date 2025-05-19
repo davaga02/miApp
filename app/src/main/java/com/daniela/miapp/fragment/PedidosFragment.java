@@ -1,11 +1,14 @@
 package com.daniela.miapp.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +20,7 @@ import com.daniela.miapp.Pedido;
 import com.daniela.miapp.PedidoAdapter;
 import com.daniela.miapp.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
@@ -60,15 +64,33 @@ public class PedidosFragment extends Fragment {
     }
 
     private void cargarPedidos() {
-        db.collection("pedidos")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .get()
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user != null ? user.getUid() : "";
+
+        SharedPreferences prefs = requireActivity().getSharedPreferences("MiAppPrefs", Context.MODE_PRIVATE);
+        String rol = prefs.getString("rol", "empleado");
+
+        db = FirebaseFirestore.getInstance();
+        CollectionReference ref = db.collection("pedidos");
+
+        Query query;
+
+        if ("administrador".equals(rol)) {
+            query = ref.orderBy("timestamp", Query.Direction.DESCENDING);
+        } else {
+            query = ref.whereEqualTo("usuario", uid);
+        }
+
+        query.get()
                 .addOnSuccessListener(snapshot -> {
                     listaPedidos.clear();
+
                     for (DocumentSnapshot doc : snapshot) {
                         try {
                             String id = doc.getId();
                             String usuario = doc.getString("usuario");
+                            String correo = doc.getString("correoUsuario");
+                            String nombre = doc.getString("nombreUsuario");
                             String mesa = doc.getString("mesa");
                             String estado = doc.getString("estado");
                             Long timestamp = doc.getLong("timestamp");
@@ -90,14 +112,21 @@ public class PedidosFragment extends Fragment {
                             }
 
                             Pedido pedido = new Pedido(id, usuario, mesa, productos, estado, timestamp);
+                            pedido.setNombreUsuario(nombre); // si tienes este campo en tu modelo
+                            pedido.setCorreoUsuario(correo); // si quieres mostrarlo también
+
                             listaPedidos.add(pedido);
 
                         } catch (Exception e) {
-                            e.printStackTrace(); // Muestra el error pero no rompe la app
+                            e.printStackTrace();
                         }
                     }
+
                     adapter.actualizarPedidos(listaPedidos);
                 })
-                .addOnFailureListener(e -> e.printStackTrace());
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error al cargar pedidos", Toast.LENGTH_SHORT).show();
+                });
     }
 }

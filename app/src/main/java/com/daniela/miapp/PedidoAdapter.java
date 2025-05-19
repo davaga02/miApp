@@ -67,6 +67,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
         }
         holder.tvProductos.setText(productosTexto.toString().trim());
         holder.tvTotalPedido.setText(String.format("Total: %.2f€", total));
+        holder.tvCreador.setText("Creado por: " + pedido.getNombreUsuario());
     }
 
     @Override
@@ -75,7 +76,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMesa, tvEstado, tvProductos, tvFechaHora, tvTotalPedido;;
+        TextView tvMesa, tvEstado, tvProductos, tvFechaHora, tvTotalPedido, tvCreador;;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -84,6 +85,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
             tvProductos = itemView.findViewById(R.id.tvProductos);
             tvFechaHora = itemView.findViewById(R.id.tvFechaHora);
             tvTotalPedido = itemView.findViewById(R.id.tvTotalPedido);
+            tvCreador = itemView.findViewById(R.id.tvCreador);
         }
     }
 
