@@ -22,6 +22,7 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
     private Map<String, ProductoSeleccionado> seleccionados = new HashMap<>();
     private Map<String, List<String>> mapaSabores = new HashMap<>();
 
+
     public void setMapaSabores(Map<String, List<String>> mapa) {
         this.mapaSabores = mapa;
         notifyDataSetChanged();
@@ -33,6 +34,10 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
 
     public Map<String, ProductoSeleccionado> getSeleccionados() {
         return seleccionados;
+    }
+
+    public void setSeleccionados(Map<String, ProductoSeleccionado> seleccionados) {
+        this.seleccionados = seleccionados;
     }
 
     public interface OnCambioCantidadListener {

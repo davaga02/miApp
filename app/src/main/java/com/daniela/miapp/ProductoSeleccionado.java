@@ -13,6 +13,10 @@ public class ProductoSeleccionado {
         this.sabor = sabor;
     }
 
+    public ProductoSeleccionado(String productoId) {
+        this.productoId = productoId;
+    }
+
     // Getters y setters
     public String getProductoId() { return productoId; }
     public int getCantidad() { return cantidad; }

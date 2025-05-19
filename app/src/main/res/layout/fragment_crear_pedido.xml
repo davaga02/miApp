@@ -7,7 +7,7 @@
     android:padding="16dp"
     android:background="#FEF4F0">
 
-
+    <!-- Botón volver -->
     <Button
         android:id="@+id/btnVolver"
         android:layout_width="wrap_content"
@@ -15,11 +15,27 @@
         android:text="← Volver"
         android:backgroundTint="#E34A35"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="12dp"
+        android:textSize="14sp"
         android:fontFamily="@font/baloo"
-        android:padding="8dp" />
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:layout_marginBottom="12dp"
+        android:drawablePadding="8dp" />
 
-    <!-- Barra de búsqueda -->
+    <!-- Título (dinámico según modo edición o creación) -->
+    <TextView
+        android:id="@+id/tvTituloCrear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nuevo Pedido"
+        android:textColor="#E34A35"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/baloo"
+        android:layout_gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Buscar producto -->
     <SearchView
         android:id="@+id/searchViewProducto"
         android:layout_width="match_parent"
@@ -28,7 +44,7 @@
         android:layout_marginBottom="12dp"
         android:background="@drawable/rounded_input" />
 
-    <!-- Spinner de categorías -->
+    <!-- Categoría -->
     <Spinner
         android:id="@+id/spinnerCategorias"
         android:layout_width="match_parent"
@@ -37,7 +53,7 @@
         android:padding="12dp"
         android:layout_marginBottom="12dp" />
 
-    <!-- Lista de productos -->
+    <!-- Productos -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerProductosPedido"
         android:layout_width="match_parent"
@@ -45,7 +61,7 @@
         android:layout_weight="1"
         android:layout_marginBottom="12dp" />
 
-    <!-- Spinner de mesas -->
+    <!-- Selección de mesa -->
     <Spinner
         android:id="@+id/spinnerMesas"
         android:layout_width="match_parent"
@@ -54,6 +70,7 @@
         android:padding="12dp"
         android:layout_marginBottom="12dp" />
 
+    <!-- Total -->
     <TextView
         android:id="@+id/tvTotal"
         android:layout_width="match_parent"
@@ -65,7 +82,7 @@
         android:gravity="end"
         android:layout_marginBottom="12dp" />
 
-    <!-- Botón de confirmación -->
+    <!-- Confirmar o Actualizar -->
     <Button
         android:id="@+id/btnConfirmarPedido"
         android:layout_width="match_parent"
@@ -75,6 +92,6 @@
         android:textSize="16sp"
         android:backgroundTint="#E34A35"
         android:fontFamily="@font/baloo"
-        app:cornerRadius="12dp" />
-
+        app:cornerRadius="12dp"
+        android:layout_marginTop="8dp" />
 </LinearLayout>

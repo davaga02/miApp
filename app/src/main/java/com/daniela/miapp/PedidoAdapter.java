@@ -6,7 +6,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.daniela.miapp.fragment.DetallePedidoFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,6 +72,15 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
         holder.tvProductos.setText(productosTexto.toString().trim());
         holder.tvTotalPedido.setText(String.format("Total: %.2f€", total));
         holder.tvCreador.setText("Creado por: " + pedido.getNombreUsuario());
+
+        holder.itemView.setOnClickListener(v -> {
+            Fragment fragment = DetallePedidoFragment.newInstance(pedido);
+            ((AppCompatActivity) v.getContext()).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 
     @Override

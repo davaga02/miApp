@@ -42,19 +42,53 @@ public class CrearPedidoFragment extends Fragment {
     private List<Map<String, Object>> productos;
     private List<Producto> listaProductos = new ArrayList<>();
     private Map<String, List<String>> mapaSabores = new HashMap<>();
+    private Map<String, ProductoSeleccionado> seleccionados = new HashMap<>();
+
+    private String pedidoId;
+    private boolean esEdicion = false;
+
+    public static CrearPedidoFragment newInstance(String pedidoId) {
+        CrearPedidoFragment fragment = new CrearPedidoFragment();
+        Bundle args = new Bundle();
+        args.putString("pedidoId", pedidoId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null && getArguments().containsKey("pedidoId")) {
+            pedidoId = getArguments().getString("pedidoId");
+            esEdicion = true;
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_crear_pedido, container, false);
+
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         spinnerMesas = view.findViewById(R.id.spinnerMesas);
         recyclerProductos = view.findViewById(R.id.recyclerProductosPedido);
+
         btnConfirmarPedido = view.findViewById(R.id.btnConfirmarPedido);
+        TextView tvTitulo = view.findViewById(R.id.tvTituloCrear);
+
+        if (esEdicion) {
+            Log.d("EDITAR_PEDIDO", "¿Modo edición?: " + esEdicion + ", pedidoId: " + pedidoId);
+            tvTitulo.setText("Editar Pedido");
+            btnConfirmarPedido.setText("Actualizar Pedido");
+        } else {
+            tvTitulo.setText("Nuevo Pedido");
+            btnConfirmarPedido.setText("Confirmar Pedido");
+        }
         db = FirebaseFirestore.getInstance();
 
         spinnerCategorias = view.findViewById(R.id.spinnerCategorias);
@@ -127,6 +161,7 @@ public class CrearPedidoFragment extends Fragment {
         adapter.setOnCambioCantidadListener(this::actualizarTotal);
 
         btnConfirmarPedido.setOnClickListener(v -> {
+
             String mesaSeleccionada = (String) spinnerMesas.getSelectedItem();
 
             //cambios
@@ -196,22 +231,39 @@ public class CrearPedidoFragment extends Fragment {
             datosPedido.put("estado", "Pendiente");
             datosPedido.put("timestamp", System.currentTimeMillis());
 
-            db.collection("pedidos")
-                    .document(pedido.getId())
-                    .set(datosPedido)
-                    .addOnSuccessListener(unused -> {
-                        Toast.makeText(requireContext(), "Pedido creado", Toast.LENGTH_SHORT).show();
-                        requireActivity().getSupportFragmentManager().popBackStack();
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(requireContext(), "Error al crear pedido", Toast.LENGTH_SHORT).show()
-                    );
+            if (esEdicion) {
+                db.collection("pedidos").document(pedidoId)
+                        .update(datosPedido)
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(requireContext(), "Pedido actualizado", Toast.LENGTH_SHORT).show();
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(requireContext(), "Error al actualizar", Toast.LENGTH_SHORT).show());
+            } else {
+                String nuevoId = UUID.randomUUID().toString();
+                datosPedido.put("id", nuevoId);
+
+                db.collection("pedidos").document(nuevoId)
+                        .set(datosPedido)
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(requireContext(), "Pedido creado", Toast.LENGTH_SHORT).show();
+                            requireActivity().getSupportFragmentManager().popBackStack();
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(requireContext(), "Error al crear pedido", Toast.LENGTH_SHORT).show());
+            }
         });
+
 
             Button btnVolver = view.findViewById(R.id.btnVolver);
             btnVolver.setOnClickListener(v -> {
                 requireActivity().getSupportFragmentManager().popBackStack();
             });
+
+        if (esEdicion) {
+            cargarPedidoParaEditar(pedidoId);
+        }
     }
 
     private void cargarProductosDesdeFirestore() {
@@ -309,5 +361,48 @@ public class CrearPedidoFragment extends Fragment {
 
         tvTotal.setText(String.format("Total: %.2f€", total));
         Log.d("TOTAL_DEBUG", "Productos seleccionados: " + adapter.getSeleccionados().size());
+    }
+
+
+
+    private void cargarPedidoParaEditar(String id) {
+        db.collection("pedidos").document(id).get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String mesa = doc.getString("mesa");
+                        spinnerMesas.setSelection(getIndexMesa(mesa));
+
+                        List<Map<String, Object>> productosFirestore = (List<Map<String, Object>>) doc.get("productos");
+
+                        Map<String, ProductoSeleccionado> seleccionados = new HashMap<>();
+
+                        for (Map<String, Object> item : productosFirestore) {
+                            String nombre = (String) item.get("nombre");
+                            String productoId = (String) item.get("id");
+                            Long cantidad = (Long) item.get("cantidad");
+                            String tamaño = item.containsKey("tamaño") ? (String) item.get("tamaño") : null;
+                            String sabor = item.containsKey("sabor") ? (String) item.get("sabor") : null;
+
+                            ProductoSeleccionado ps = new ProductoSeleccionado(productoId);
+                            ps.setCantidad(cantidad.intValue());
+                            ps.setTamaño(tamaño);
+                            ps.setSabor(sabor);
+                            seleccionados.put(productoId, ps);
+                        }
+
+                        adapter.setSeleccionados(seleccionados);
+                        adapter.notifyDataSetChanged();
+                        actualizarTotal();
+                    }
+                });
+    }
+
+    private int getIndexMesa(String mesa) {
+        for (int i = 0; i < spinnerMesas.getCount(); i++) {
+            if (spinnerMesas.getItemAtPosition(i).toString().equalsIgnoreCase(mesa)) {
+                return i;
+            }
+        }
+        return 0;
     }
 }
