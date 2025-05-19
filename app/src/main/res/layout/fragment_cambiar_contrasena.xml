@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#FEF4F0">
+
+    <!-- Botón volver -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:layout_marginBottom="16dp">
+
+        <ImageButton
+            android:id="@+id/btnVolver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow"
+            android:contentDescription="Volver"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="#E34A35"
+            android:layout_marginBottom="16dp"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/editActualContrasena"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña actual"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_input" />
+
+    <EditText
+        android:id="@+id/editNuevaContrasena"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nueva contraseña"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_input" />
+
+    <Button
+        android:id="@+id/btnGuardarContrasena"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        android:backgroundTint="#E34A35"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+</LinearLayout>

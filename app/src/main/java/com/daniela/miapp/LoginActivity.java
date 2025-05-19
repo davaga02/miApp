@@ -1,8 +1,10 @@
 package com.daniela.miapp;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -47,6 +49,10 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         btnGoogle = findViewById(R.id.btnGoogleSignIn);
         tvRegistro = findViewById(R.id.tvRegister);
+
+        //Funcionalidad Olvidaste la contraseña
+        TextView forgotPassword = findViewById(R.id.forgotPassword);
+        forgotPassword.setOnClickListener(v -> mostrarDialogoRecuperarContrasena());
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -96,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    // 🔐 Login con email y contraseña
     public void onClikAcceder(View view) {
         String correo = etCorreo.getText().toString().trim();
         String contrasena = etContrasena.getText().toString().trim();
@@ -106,48 +111,60 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        mAuth.signInWithEmailAndPassword(correo, contrasena)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
 
-        db.collection("usuarios")
-                .whereEqualTo("correo", correo)
-                .whereEqualTo("contrasena", contrasena)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // OBTENEMOS nombre y rol
-                        String rol = queryDocumentSnapshots.getDocuments().get(0).getString("rol");
-                        String nombre = queryDocumentSnapshots.getDocuments().get(0).getString("nombre");
+                        if (user != null && user.isEmailVerified()) {
+                            String uid = user.getUid();
 
-                        Toast.makeText(this, "Bienvenido " + rol, Toast.LENGTH_SHORT).show();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("usuarios").document(uid).get()
+                                    .addOnSuccessListener(document -> {
+                                        if (document.exists()) {
+                                            String nombre = document.getString("nombre");
+                                            String email = document.getString("correo");
+                                            String rol = document.getString("rol");
 
-                        Intent intent = null;
+                                            // Guardar en SharedPreferences
+                                            SharedPreferences prefs = getSharedPreferences("MiAppPrefs", MODE_PRIVATE);
+                                            prefs.edit()
+                                                    .putString("nombreUsuario", nombre)
+                                                    .putString("emailUsuario", email)
+                                                    .putString("rol", rol)
+                                                    .putString("uidUsuario", uid)
+                                                    .putBoolean("logueado", true)
+                                                    .apply();
 
-                        if ("administrador".equals(rol)) {
-                            intent = new Intent(this, PrincipalAdminActivity.class);
-                        } else if ("empleado".equals(rol)) {
-                            intent = new Intent(this, PrincipalEmpleadoActivity.class);
+                                            // Redirigir según rol
+                                            Intent intent;
+                                            if ("administrador".equals(rol)) {
+                                                intent = new Intent(this, PrincipalAdminActivity.class);
+                                            } else if ("empleado".equals(rol)) {
+                                                intent = new Intent(this, PrincipalEmpleadoActivity.class);
+                                            } else {
+                                                intent = new Intent(this, PrincipalClienteActivity.class);
+                                            }
+
+                                            intent.putExtra("nombreUsuario", nombre);
+                                            startActivity(intent);
+                                            finish();
+
+                                        } else {
+                                            Toast.makeText(this, "No se encontró información de usuario", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         } else {
-                            intent = new Intent(this, PrincipalClienteActivity.class);
+                            Toast.makeText(this, "Verifica tu correo antes de continuar", Toast.LENGTH_LONG).show();
+                            FirebaseAuth.getInstance().signOut();
                         }
-
-                        // PASAMOS EL NOMBRE por el intent
-                        intent.putExtra("nombreUsuario", nombre);
-                        SharedPreferences prefs = getSharedPreferences("MiAppPrefs", MODE_PRIVATE);
-                        prefs.edit()
-                                .putString("nombreUsuario", nombre)
-                                .putString("rol", rol)
-                                .putBoolean("logueado", true)
-                                .apply();
-                        startActivity(intent);
-
                     } else {
-                        Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Autenticación fallida", Toast.LENGTH_SHORT).show();
                     }
-
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Error al conectar", Toast.LENGTH_SHORT).show());
+                });
     }
+
 
     // ✅ Resultado del inicio de sesión con Google
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
@@ -209,5 +226,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginConGoogle(View view) {
+    }
+
+    private void mostrarDialogoRecuperarContrasena() {
+        EditText inputCorreo = new EditText(this);
+        inputCorreo.setHint("Correo electrónico");
+        inputCorreo.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Recuperar contraseña")
+                .setMessage("Introduce tu correo para recibir instrucciones.")
+                .setView(inputCorreo)
+                .setPositiveButton("Enviar", (dialog, which) -> {
+                    String correo = inputCorreo.getText().toString().trim();
+                    if (!correo.isEmpty()) {
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(correo)
+                                .addOnSuccessListener(unused ->
+                                        Toast.makeText(this, "Correo enviado. Revisa tu bandeja de entrada.", Toast.LENGTH_LONG).show())
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                    } else {
+                        Toast.makeText(this, "Debes ingresar un correo válido", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", null)
+                .show();
     }
 }

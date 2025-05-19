@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 
 import com.daniela.miapp.fragment.InicioEmpleadoFragment;
 import com.daniela.miapp.fragment.PedidosFragment;
-import com.daniela.miapp.fragment.PerfilEmpleadoFragment;
 import com.daniela.miapp.fragment.PerfilFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -25,18 +24,6 @@ public class PrincipalEmpleadoActivity extends AppCompatActivity {
 
         String n = getIntent().getStringExtra("nombreUsuario");
         TextView tvAppName = findViewById(R.id.tvAppName);
-
-        // Este código puede ir en el método onCreate o al seleccionar "Perfil"
-        String nombre = "Nombre del usuario";
-        String email = "correo@ejemplo.com";
-        String rol = "admin"; // o "empleado", puedes obtenerlo desde SharedPreferences o Firebase
-
-        PerfilFragment fragment = PerfilFragment.newInstance(nombre, email, rol);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frameContainer, fragment) // fragment_container = tu contenedor de fragments
-                .commit();
 
         if (tvAppName != null && n != null) {
             tvAppName.setText("Hola " + n);
@@ -54,7 +41,7 @@ public class PrincipalEmpleadoActivity extends AppCompatActivity {
             } else if (itemId == R.id.nav_pedidos) {
                 selectedFragment = new PedidosFragment();
             } else if (itemId == R.id.nav_perfil) {
-                selectedFragment = new PerfilEmpleadoFragment();
+                selectedFragment = new PerfilFragment(); // ✅ se carga desde Firebase
             }
 
             if (selectedFragment != null) {

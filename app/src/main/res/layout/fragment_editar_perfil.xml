@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FEF4F0">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Botón volver -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_marginBottom="16dp">
+
+                <ImageButton
+                    android:id="@+id/btnVolver"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow"
+                    android:contentDescription="Volver"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="#E34A35"
+                    android:layout_marginBottom="16dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Editar Perfil"
+                android:textColor="#E34A35"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/baloo"
+                android:layout_marginBottom="24dp" />
+
+            <EditText
+                android:id="@+id/editNombre"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Nombre"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_input"
+                android:textColor="#3E3E3E" />
+
+            <EditText
+                android:id="@+id/editEmail"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Correo electrónico"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/rounded_input"
+                android:textColor="#3E3E3E" />
+
+            <TextView
+                android:id="@+id/txtRol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rol: admin"
+                android:fontFamily="@font/baloo"
+                android:textSize="18sp"
+                android:textColor="#3E3E3E"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Guardar cambios"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:backgroundTint="#E34A35"
+                app:cornerRadius="16dp"
+                android:layout_marginBottom="30dp" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+

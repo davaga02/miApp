@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.daniela.miapp.fragment.EmployeesFragment;
+
 import com.daniela.miapp.fragment.HomeFragment;
 import com.daniela.miapp.fragment.OrdersFragment;
 import com.daniela.miapp.fragment.PerfilFragment;
@@ -51,17 +51,6 @@ public class PrincipalAdminActivity extends AppCompatActivity {
             tvAppName.setText("Hola " + nombre);
         }
 
-        // Este código puede ir en el método onCreate o al seleccionar "Perfil"
-        String nombre = "Nombre del usuario";
-        String email = "correo@ejemplo.com";
-        String rol = "admin"; // o "empleado", puedes obtenerlo desde SharedPreferences o Firebase
-
-        PerfilFragment fragment = PerfilFragment.newInstance(nombre, email, rol);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frameContainer, fragment) // fragment_container = tu contenedor de fragments
-                .commit();
 
         initView();
         initValues();
@@ -94,8 +83,8 @@ public class PrincipalAdminActivity extends AppCompatActivity {
                     selectedFragment = OrdersFragment.newInstance();
                 } else if (itemId == R.id.nav_products) {
                     selectedFragment = ProductsFragment.newInstance();
-                } else if (itemId == R.id.nav_profile) {
-                    selectedFragment = ProfileFragment.newInstance();
+                }else if (itemId == R.id.nav_profile) {
+                    selectedFragment = new PerfilFragment(); // No se pasan datos
                 }
 
                 // Cargar el fragmento correspondiente

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,25 +16,19 @@ import androidx.fragment.app.Fragment;
 
 import com.daniela.miapp.LoginActivity;
 import com.daniela.miapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class PerfilFragment extends Fragment {
 
     private TextView txtNombre, txtEmail, txtRol;
     private Button btnEditarPerfil, btnCambiarContrasena, btnCerrarSesion;
+    private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     private String nombre, email, rol;
 
     public PerfilFragment() {}
-
-    public static PerfilFragment newInstance(String nombre, String email, String rol) {
-        PerfilFragment fragment = new PerfilFragment();
-        Bundle args = new Bundle();
-        args.putString("nombre", nombre);
-        args.putString("email", email);
-        args.putString("rol", rol);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,37 +38,58 @@ public class PerfilFragment extends Fragment {
         txtNombre = view.findViewById(R.id.txtNombre);
         txtEmail = view.findViewById(R.id.txtEmail);
         txtRol = view.findViewById(R.id.txtRol);
-
         btnEditarPerfil = view.findViewById(R.id.btnEditarPerfil);
         btnCambiarContrasena = view.findViewById(R.id.btnCambiarContrasena);
         btnCerrarSesion = view.findViewById(R.id.btnCerrarSesion);
 
-        if (getArguments() != null) {
-            nombre = getArguments().getString("nombre");
-            email = getArguments().getString("email");
-            rol = getArguments().getString("rol");
-        }
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        txtNombre.setText("Nombre: " + nombre);
-        txtEmail.setText("Email: " + email);
-        txtRol.setText("Rol: " + rol);
+        String uid = mAuth.getCurrentUser().getUid();
 
-        btnEditarPerfil.setOnClickListener(v -> {
-            // Aquí iría navegación a EditarPerfilActivity o Fragment
-            Toast.makeText(getContext(), "Editar perfil", Toast.LENGTH_SHORT).show();
-        });
+        db.collection("usuarios").document(uid).get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        nombre = document.getString("nombre");
+                        email = document.getString("correo"); // corregido de "email"
+                        rol = document.getString("rol");
 
+                        txtNombre.setText("Nombre: " + nombre);
+                        txtEmail.setText("Email: " + email);
+                        txtRol.setText("Rol: " + rol);
+
+                        // Listener para editar (solo cuando ya tenemos los datos)
+                        btnEditarPerfil.setOnClickListener(v -> {
+                            Fragment editarPerfilFragment = EditarPerfilFragment.newInstance(nombre, email, rol);
+                            requireActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.frameContainer, editarPerfilFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                        });
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(getContext(), "Error al cargar perfil", Toast.LENGTH_SHORT).show()
+                );
+
+        // Cambiar contraseña
         btnCambiarContrasena.setOnClickListener(v -> {
-            // Aquí iría navegación a CambiarContraseñaActivity o Fragment
-            Toast.makeText(getContext(), "Cambiar contraseña", Toast.LENGTH_SHORT).show();
+            Fragment cambiarFragment = new CambiarContrasenaFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, cambiarFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
+        // Cerrar sesión
         btnCerrarSesion.setOnClickListener(v -> {
-            // Aquí borras datos de sesión (ejemplo usando SharedPreferences)
-            SharedPreferences preferences = requireActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
+            SharedPreferences preferences = requireActivity().getSharedPreferences("MiAppPrefs", Context.MODE_PRIVATE);
             preferences.edit().clear().apply();
 
-            // Regresar a LoginActivity
+            FirebaseAuth.getInstance().signOut();
+
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
