@@ -23,12 +23,12 @@
             <TextView
                 android:id="@+id/tvMesa"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Mesa 1"
-                android:textStyle="bold"
+                android:layout_weight="1"
+                android:text="1"
+                android:textColor="#E34A35"
                 android:textSize="20sp"
-                android:textColor="#E34A35" />
+                android:textStyle="bold" />
 
             <ImageButton
                 android:id="@+id/btnEditar"
@@ -38,6 +38,15 @@
                 android:src="@drawable/ic_edit"
                 android:contentDescription="Editar"
                 app:tint="#444" />
+            <ImageButton
+                android:id="@+id/btnEliminar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="Eliminar pedido"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@android:color/holo_red_dark"
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
         <!-- Estado -->

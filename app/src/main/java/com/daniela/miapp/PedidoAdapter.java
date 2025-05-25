@@ -1,5 +1,6 @@
 package com.daniela.miapp;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,6 +111,27 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
         holder.btnCompletado.setOnClickListener(v -> {
             actualizarEstadoEnFirestore(pedido.getId(), "Completado");
         });
+
+        holder.btnEliminar.setOnClickListener(v -> {
+            new AlertDialog.Builder(holder.itemView.getContext())
+                    .setTitle("Eliminar Pedido")
+                    .setMessage("¿Seguro que querés eliminar este pedido?")
+                    .setPositiveButton("Sí", (dialog, which) -> {
+                        FirebaseFirestore.getInstance()
+                                .collection("pedidos")
+                                .document(pedido.getId())
+                                .delete()
+                                .addOnSuccessListener(unused -> {
+                                    Toast.makeText(holder.itemView.getContext(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
+                                    pedidos.remove(position);
+                                    notifyItemRemoved(position);
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(holder.itemView.getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show());
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        });
     }
 
     @Override
@@ -119,7 +142,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvMesa, tvEstado, tvProductos, tvFechaHora, tvTotalPedido, tvCreador;
         Button btnPreparacion, btnCompletado;
-        ImageButton btnEditar;;
+        ImageButton btnEditar, btnEliminar;;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -132,6 +155,7 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
             btnEditar = itemView.findViewById(R.id.btnEditar);
             btnPreparacion = itemView.findViewById(R.id.btnEnPreparacion);
             btnCompletado = itemView.findViewById(R.id.btnCompletado);
+            btnEliminar = itemView.findViewById(R.id.btnEliminar);
         }
     }
 
