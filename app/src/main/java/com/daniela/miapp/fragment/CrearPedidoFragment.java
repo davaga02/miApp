@@ -316,6 +316,21 @@ public class CrearPedidoFragment extends Fragment {
         }
 
         adapter.setProductos(filtrados);
+
+        // Elimina productos seleccionados que ya no están visibles
+        Set<String> idsVisibles = new HashSet<>();
+        for (Producto p : filtrados) {
+            idsVisibles.add(p.getId());
+        }
+
+        Map<String, ProductoSeleccionado> seleccionadosActuales = adapter.getSeleccionados();
+        Iterator<String> it = seleccionadosActuales.keySet().iterator();
+        while (it.hasNext()) {
+            String id = it.next();
+            if (!idsVisibles.contains(id)) {
+                it.remove();  // Eliminar los productos seleccionados que ya no están visibles
+            }
+        }
         adapter.notifyDataSetChanged();
         actualizarTotal(); // Vuelve a calcular el total con los seleccionados actuales
     }

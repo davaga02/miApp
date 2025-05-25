@@ -59,13 +59,19 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        // Al principio del onBindViewHolder()
+        holder.spinnerTamaño.setOnItemSelectedListener(null);
+        holder.spinnerSabor.setOnItemSelectedListener(null);
+        holder.tvCantidad.setText(""); // reset por si queda basura
+
         Producto producto = productos.get(position);
         holder.tvNombre.setText(producto.getNombre());
 
         // Cantidad inicial
         ProductoSeleccionado psGuardado = seleccionados.get(producto.getId());
         int cantidadGuardada = psGuardado != null ? psGuardado.getCantidad() : 0;
-        holder.tvCantidad.setText(String.valueOf(cantidadGuardada));
+        holder.tvCantidad.setText(String.valueOf(Math.max(0, cantidadGuardada)));
 
         // 🔹 Configurar tamaño si aplica
         if (producto.getPrecios() != null && producto.getPrecios().size() > 1) {
@@ -143,6 +149,7 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
 
 
         // Escucha cambios en cantidad
+        /*
         holder.tvCantidad.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -150,6 +157,8 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
                 actualizarSeleccion(producto, holder);
             }
         });
+
+
 
         // Escucha cambios en tamaño y sabor
         holder.spinnerTamaño.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -166,6 +175,8 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+         */
+
         // Botón agregar producto
         holder.btnAgregarProducto.setOnClickListener(v -> {
             int cantidad;
@@ -180,11 +191,29 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
                 return;
             }
 
-            actualizarSeleccion(producto, holder);
+            String tamaño = null;
+            String sabor = null;
+
+            if (producto.getPrecios() != null && producto.getPrecios().size() > 1) {
+                tamaño = (String) holder.spinnerTamaño.getSelectedItem();
+            }
+
+            if (producto.isRequiereSabor()) {
+                sabor = (String) holder.spinnerSabor.getSelectedItem();
+            }
+
+            ProductoSeleccionado seleccionado = new ProductoSeleccionado(producto.getId(), cantidad, tamaño, sabor);
+            seleccionados.put(producto.getId(), seleccionado);
+
+            if (listener != null) {
+                listener.onCambio();
+            }
+
             Toast.makeText(holder.itemView.getContext(), "✅ Producto añadido correctamente", Toast.LENGTH_SHORT).show();
         });
     }
 
+    /*
     private void actualizarSeleccion(Producto producto, ViewHolder holder) {
         int cantidad;
         try {
@@ -210,6 +239,8 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
         ProductoSeleccionado seleccionado = new ProductoSeleccionado(producto.getId(), cantidad, tamaño, sabor);
         seleccionados.put(producto.getId(), seleccionado);
     }
+
+     */
 
     @Override
     public int getItemCount() {
