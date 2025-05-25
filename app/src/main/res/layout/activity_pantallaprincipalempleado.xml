@@ -16,7 +16,7 @@
         android:gravity="center|left"
         android:padding="16dp"
         android:text="Hola &quot;Nombre Empleado&quot;"
-        android:textColor="#000000"
+        android:textColor="#575757"
         android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent" />
 

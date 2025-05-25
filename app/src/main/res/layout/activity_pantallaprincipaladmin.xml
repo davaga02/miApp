@@ -18,7 +18,7 @@
         android:gravity="center|left"
         android:padding="16dp"
         android:text="Hola &quot;Nombre Admin&quot;"
-        android:textColor="@color/black"
+        android:textColor="#575757"
         android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent" />
 

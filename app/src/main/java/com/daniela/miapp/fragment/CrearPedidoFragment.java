@@ -268,7 +268,18 @@ public class CrearPedidoFragment extends Fragment {
                         .set(datosPedido)
                         .addOnSuccessListener(unused -> {
                             Toast.makeText(requireContext(), "Pedido creado", Toast.LENGTH_SHORT).show();
-                            requireActivity().getSupportFragmentManager().popBackStack();
+
+                            if (getArguments() != null && getArguments().containsKey("mesaCliente")) {
+                                double total = calcularTotal(productosFinal);
+                                PagarFragment fragment = PagarFragment.newInstance(nuevoId, total);
+                                requireActivity().getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .replace(R.id.frameContainerCliente, fragment)
+                                        .addToBackStack(null)
+                                        .commit();
+                            } else {
+                                requireActivity().getSupportFragmentManager().popBackStack();
+                            }
                         })
                         .addOnFailureListener(e ->
                                 Toast.makeText(requireContext(), "Error al crear pedido", Toast.LENGTH_SHORT).show());
@@ -449,6 +460,17 @@ public class CrearPedidoFragment extends Fragment {
         tvTitulo.setText("Editar Pedido");
 
         cargarPedidoParaEditar(pedidoId);
+    }
+
+    private double calcularTotal(List<Map<String, Object>> productosFinal) {
+        double total = 0.0;
+        for (Map<String, Object> item : productosFinal) {
+            Object subtotalObj = item.get("subtotal");
+            if (subtotalObj instanceof Number) {
+                total += ((Number) subtotalObj).doubleValue();
+            }
+        }
+        return total;
     }
 
 

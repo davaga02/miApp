@@ -29,7 +29,7 @@
             android:id="@+id/titleWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bienvenido a Gestika"
+            android:text="Bienvenido a Pídeme"
             android:textColor="#E34A35"
             android:textSize="22sp"
             android:fontFamily="@font/baloo"
