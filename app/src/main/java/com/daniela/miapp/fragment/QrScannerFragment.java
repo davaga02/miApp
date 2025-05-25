@@ -1,6 +1,7 @@
 package com.daniela.miapp.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +20,12 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
+import android.Manifest;
 import com.daniela.miapp.R;
 import com.daniela.miapp.fragment.CrearPedidoFragment;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -56,17 +59,26 @@ public class QrScannerFragment extends Fragment {
         previewView = view.findViewById(R.id.cameraPreview);
         cameraExecutor = Executors.newSingleThreadExecutor();
 
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
-                ProcessCameraProvider.getInstance(requireContext());
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            iniciarCamara(); // extrae tu lógica actual aquí
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, 1001);
+        }
 
-        cameraProviderFuture.addListener(() -> {
-            try {
-                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                bindCamera(cameraProvider);
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        }, ContextCompat.getMainExecutor(requireContext()));
+
+
+        Button btnSimularQR = view.findViewById(R.id.btnSimularQR);
+        btnSimularQR.setOnClickListener(v -> {
+            String mesaSimulada = "Mesa 3"; // Podés cambiarlo por la que quieras
+            Toast.makeText(requireContext(), "Simulando QR: " + mesaSimulada, Toast.LENGTH_SHORT).show();
+
+            CrearPedidoFragment fragment = CrearPedidoFragment.newInstanceParaCliente(mesaSimulada);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainerCliente, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         // Botón para volver
         Button btnVolver = view.findViewById(R.id.btnVolver);
@@ -74,6 +86,8 @@ public class QrScannerFragment extends Fragment {
     }
 
     private void bindCamera(@NonNull ProcessCameraProvider cameraProvider) {
+        cameraProvider.unbindAll(); // ✅ Desvincula todos los use cases activos primero
+
         Preview preview = new Preview.Builder().build();
         CameraSelector selector = CameraSelector.DEFAULT_BACK_CAMERA;
 
@@ -83,7 +97,6 @@ public class QrScannerFragment extends Fragment {
                 .build();
 
         analysis.setAnalyzer(cameraExecutor, imageProxy -> {
-            @SuppressLint("UnsafeOptInUsageError")
             ImageProxy.PlaneProxy[] planes = imageProxy.getPlanes();
             if (planes.length > 0 && !isScanned) {
                 @SuppressLint("UnsafeOptInUsageError")
@@ -101,11 +114,7 @@ public class QrScannerFragment extends Fragment {
 
                                     Toast.makeText(requireContext(), "Escaneado: " + value, Toast.LENGTH_SHORT).show();
 
-                                    // Ir a CrearPedidoFragment con la mesa cargada
-                                    CrearPedidoFragment fragment = new CrearPedidoFragment();
-                                    Bundle args = new Bundle();
-                                    args.putString("mesaCliente", value);
-                                    fragment.setArguments(args);
+                                    CrearPedidoFragment fragment = CrearPedidoFragment.newInstanceParaCliente(value);
                                     requireActivity().getSupportFragmentManager()
                                             .beginTransaction()
                                             .replace(R.id.frameContainerCliente, fragment)
@@ -125,10 +134,30 @@ public class QrScannerFragment extends Fragment {
         cameraProvider.bindToLifecycle((LifecycleOwner) this, selector, preview, analysis);
     }
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        cameraExecutor.shutdown();
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (cameraExecutor != null) {
+            cameraExecutor.shutdown();
+            cameraExecutor = null;
+        }
     }
+
+    private void iniciarCamara() {
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
+                ProcessCameraProvider.getInstance(requireContext());
+
+        cameraProviderFuture.addListener(() -> {
+            try {
+                ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
+                cameraProvider.unbindAll();
+                bindCamera(cameraProvider);
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }, ContextCompat.getMainExecutor(requireContext()));
+    }
+
 }
 

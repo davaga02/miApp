@@ -19,4 +19,12 @@
         android:backgroundTint="#E34A35"
         android:textColor="#FFFFFF"
         android:layout_gravity="top|start" />
+
+    <Button
+        android:id="@+id/btnSimularQR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simular QR Mesa 3"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp" />
 </FrameLayout>

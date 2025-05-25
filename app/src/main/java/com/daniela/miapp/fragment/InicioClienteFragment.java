@@ -57,11 +57,17 @@ public class InicioClienteFragment extends Fragment {
 
         btnEscanearQR = view.findViewById(R.id.btnEscanearQR);
 
-        btnEscanearQR.setOnClickListener(v -> lanzarEscanerQR());
+        btnEscanearQR.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainerCliente, new QrScannerFragment()) // Usa tu fragmento
+                    .addToBackStack(null) // Esto permite volver atrás
+                    .commit();
+        });
 
         return view;
     }
-
+/*
     private void lanzarEscanerQR() {
         IntentIntegrator integrator = new IntentIntegrator(requireActivity());
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
@@ -73,4 +79,6 @@ public class InicioClienteFragment extends Fragment {
         Intent intent = integrator.createScanIntent();
         qrLauncher.launch(intent);
     }
+
+ */
 }

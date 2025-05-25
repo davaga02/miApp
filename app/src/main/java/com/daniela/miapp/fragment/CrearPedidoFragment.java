@@ -72,12 +72,6 @@ public class CrearPedidoFragment extends Fragment {
             esEdicion = true;
         }
 
-        if (getArguments() != null && getArguments().containsKey("mesaCliente")) {
-            String mesaCliente = getArguments().getString("mesaCliente");
-            int index = getIndexMesa(mesaCliente);
-            spinnerMesas.setSelection(index);
-            spinnerMesas.setEnabled(false); // para que no se pueda cambiar
-        }
     }
 
     @Nullable
@@ -91,19 +85,30 @@ public class CrearPedidoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         spinnerMesas = view.findViewById(R.id.spinnerMesas);
+
+        if (getArguments() != null && getArguments().containsKey("mesaCliente")) {
+            String mesaCliente = getArguments().getString("mesaCliente");
+
+            // Esperar a que se llene el spinner antes de seleccionar
+            spinnerMesas.post(() -> {
+                int index = getIndexMesa(mesaCliente);
+                spinnerMesas.setSelection(index);
+                spinnerMesas.setEnabled(false);
+            });
+        }
         recyclerProductos = view.findViewById(R.id.recyclerProductosPedido);
 
         btnConfirmarPedido = view.findViewById(R.id.btnConfirmarPedido);
-        TextView tvTitulo = view.findViewById(R.id.tvTituloCrear);
 
+        TextView tvTitulo = view.findViewById(R.id.tvTituloCrear);
         if (esEdicion) {
             Log.d("EDITAR_PEDIDO", "¿Modo edición?: " + esEdicion + ", pedidoId: " + pedidoId);
-            tvTitulo.setText("Editar Pedido");
-            btnConfirmarPedido.setText("Actualizar Pedido");
+            prepararParaEdicion(); // ✅ Ahora usamos el método nuevo
         } else {
             tvTitulo.setText("Nuevo Pedido");
             btnConfirmarPedido.setText("Confirmar Pedido");
         }
+
         db = FirebaseFirestore.getInstance();
 
         spinnerCategorias = view.findViewById(R.id.spinnerCategorias);
@@ -436,6 +441,14 @@ public class CrearPedidoFragment extends Fragment {
             }
         }
         return 0;
+    }
+
+    private void prepararParaEdicion() {
+        TextView tvTitulo = requireView().findViewById(R.id.tvTituloCrear);
+        btnConfirmarPedido.setText("Actualizar Pedido");
+        tvTitulo.setText("Editar Pedido");
+
+        cargarPedidoParaEditar(pedidoId);
     }
 
 
