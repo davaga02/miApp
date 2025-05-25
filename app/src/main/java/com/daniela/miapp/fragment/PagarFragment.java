@@ -42,7 +42,15 @@ public class PagarFragment extends Fragment {
 
         btnPagar.setOnClickListener(v -> {
             Toast.makeText(getContext(), "✅ Pago simulado correctamente", Toast.LENGTH_SHORT).show();
-            requireActivity().getSupportFragmentManager().popBackStack(); // o ir a otro fragmento final
+
+            String pedidoId = getArguments().getString("pedidoId");
+
+            SeguimientoPedidoFragment fragment = SeguimientoPedidoFragment.newInstance(pedidoId);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainerCliente, fragment) // usa el mismo container
+                    .addToBackStack(null)
+                    .commit();
         });
     }
 }
