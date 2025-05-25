@@ -28,7 +28,22 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth")
 
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.firebase.crashlytics.buildtools)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Guava para ListenableFuture
+    implementation ("com.google.guava:guava:31.1-android")
+
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+    // ML Kit Barcode Scanning
+    implementation ("com.google.mlkit:barcode-scanning:17.2.0")
+
+    // CameraX
+    implementation ("androidx.camera:camera-core:1.3.0")
+    implementation ("androidx.camera:camera-camera2:1.3.0")
+    implementation ("androidx.camera:camera-lifecycle:1.3.0")
+    implementation ("androidx.camera:camera-view:1.3.0")
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -80,7 +80,7 @@ public class PrincipalClienteActivity extends AppCompatActivity {
                 int itemId = item.getItemId(); // Get the item ID
 
                 if (itemId == R.id.nav_inicio) {
-                    selectedFragment = InicioClienteFragment.newInstance();
+                    selectedFragment = new InicioClienteFragment();
                 } else if (itemId == R.id.nav_pedidos) {
                     selectedFragment = MisPedidosClienteFragment.newInstance();
                 } else if (itemId == R.id.nav_perfil) {

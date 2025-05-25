@@ -55,6 +55,14 @@ public class CrearPedidoFragment extends Fragment {
         return fragment;
     }
 
+    public static CrearPedidoFragment newInstanceParaCliente(String mesa) {
+        CrearPedidoFragment fragment = new CrearPedidoFragment();
+        Bundle args = new Bundle();
+        args.putString("mesaCliente", mesa);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +70,13 @@ public class CrearPedidoFragment extends Fragment {
         if (getArguments() != null && getArguments().containsKey("pedidoId")) {
             pedidoId = getArguments().getString("pedidoId");
             esEdicion = true;
+        }
+
+        if (getArguments() != null && getArguments().containsKey("mesaCliente")) {
+            String mesaCliente = getArguments().getString("mesaCliente");
+            int index = getIndexMesa(mesaCliente);
+            spinnerMesas.setSelection(index);
+            spinnerMesas.setEnabled(false); // para que no se pueda cambiar
         }
     }
 
@@ -264,6 +279,8 @@ public class CrearPedidoFragment extends Fragment {
         if (esEdicion) {
             cargarPedidoParaEditar(pedidoId);
         }
+
+
     }
 
     private void cargarProductosDesdeFirestore() {
@@ -405,4 +422,6 @@ public class CrearPedidoFragment extends Fragment {
         }
         return 0;
     }
+
+
 }
