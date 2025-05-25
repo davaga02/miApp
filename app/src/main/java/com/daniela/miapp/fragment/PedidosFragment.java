@@ -3,6 +3,7 @@ package com.daniela.miapp.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +62,12 @@ public class PedidosFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
+
+        Button btnVerCompletados = view.findViewById(R.id.btnVerCompletados);
+        btnVerCompletados.setOnClickListener(v -> cargarPedidosCompletados());
+
+        Button btnVerActivos = view.findViewById(R.id.btnVerActivos);
+        btnVerActivos.setOnClickListener(v -> cargarPedidos());
     }
 
     private void cargarPedidos() {
@@ -76,7 +83,9 @@ public class PedidosFragment extends Fragment {
         Query query;
 
         if ("administrador".equals(rol)) {
-            query = ref.orderBy("timestamp", Query.Direction.DESCENDING);
+            query = ref
+                    .whereNotEqualTo("estado", "Completado")
+                    .orderBy("timestamp", Query.Direction.DESCENDING);
         } else {
             query = ref.whereEqualTo("usuario", uid);
         }
@@ -115,7 +124,9 @@ public class PedidosFragment extends Fragment {
                             pedido.setNombreUsuario(nombre); // si tienes este campo en tu modelo
                             pedido.setCorreoUsuario(correo); // si quieres mostrarlo también
 
-                            listaPedidos.add(pedido);
+                            if (!"Completado".equalsIgnoreCase(pedido.getEstado())) {
+                                listaPedidos.add(pedido);
+                            }
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -126,6 +137,57 @@ public class PedidosFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
+                    Toast.makeText(getContext(), "Error al cargar pedidos", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void cargarPedidosCompletados() {
+        db.collection("pedidos")
+                .whereEqualTo("estado", "Completado")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    listaPedidos.clear();
+                    for (DocumentSnapshot doc : snapshot) {
+                        try {
+                            String id = doc.getId();
+                            String usuario = doc.getString("usuario");
+                            String correo = doc.getString("correoUsuario");
+                            String nombre = doc.getString("nombreUsuario");
+                            String mesa = doc.getString("mesa");
+                            String estado = doc.getString("estado");
+                            Long timestamp = doc.getLong("timestamp");
+
+                            List<Map<String, Object>> productos = new ArrayList<>();
+                            Object rawProductos = doc.get("productos");
+                            if (rawProductos instanceof List<?>) {
+                                for (Object item : (List<?>) rawProductos) {
+                                    if (item instanceof Map<?, ?>) {
+                                        Map<String, Object> prod = new HashMap<>();
+                                        for (Map.Entry<?, ?> entry : ((Map<?, ?>) item).entrySet()) {
+                                            if (entry.getKey() instanceof String) {
+                                                prod.put((String) entry.getKey(), entry.getValue());
+                                            }
+                                        }
+                                        productos.add(prod);
+                                    }
+                                }
+                            }
+
+                            Pedido pedido = new Pedido(id, usuario, mesa, productos, estado, timestamp);
+                            pedido.setNombreUsuario(nombre);
+                            pedido.setCorreoUsuario(correo);
+                            listaPedidos.add(pedido);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    adapter.actualizarPedidos(listaPedidos);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FIRESTORE_ERROR", "Error al cargar pedidos completados", e); // 👈 Esto muestra el error real en Logcat
                     Toast.makeText(getContext(), "Error al cargar pedidos", Toast.LENGTH_SHORT).show();
                 });
     }

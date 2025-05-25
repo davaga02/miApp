@@ -1,8 +1,11 @@
 package com.daniela.miapp;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,7 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daniela.miapp.fragment.DetallePedidoFragment;
+import com.daniela.miapp.fragment.CrearPedidoFragment;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -69,17 +73,41 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
 
             productosTexto.append(linea).append("\n");
         }
+
+        switch (pedido.getEstado()) {
+            case "Pendiente":
+                holder.tvEstado.setTextColor(Color.parseColor("#FFA500")); // naranja
+                break;
+            case "En preparación":
+                holder.tvEstado.setTextColor(Color.parseColor("#007BFF")); // azul
+                break;
+            case "Completado":
+                holder.tvEstado.setTextColor(Color.parseColor("#28a745")); // verde
+                break;
+            default:
+                holder.tvEstado.setTextColor(Color.GRAY);
+        }
+
         holder.tvProductos.setText(productosTexto.toString().trim());
         holder.tvTotalPedido.setText(String.format("Total: %.2f€", total));
         holder.tvCreador.setText("Creado por: " + pedido.getNombreUsuario());
 
-        holder.itemView.setOnClickListener(v -> {
-            Fragment fragment = DetallePedidoFragment.newInstance(pedido);
+
+        holder.btnEditar.setOnClickListener(v -> {
+            Fragment f = CrearPedidoFragment.newInstance(pedido.getId());
             ((AppCompatActivity) v.getContext()).getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.frameContainer, fragment)
+                    .replace(R.id.frameContainer, f)
                     .addToBackStack(null)
                     .commit();
+        });
+
+        holder.btnPreparacion.setOnClickListener(v -> {
+            actualizarEstadoEnFirestore(pedido.getId(), "En preparación");
+        });
+
+        holder.btnCompletado.setOnClickListener(v -> {
+            actualizarEstadoEnFirestore(pedido.getId(), "Completado");
         });
     }
 
@@ -89,7 +117,9 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvMesa, tvEstado, tvProductos, tvFechaHora, tvTotalPedido, tvCreador;;
+        TextView tvMesa, tvEstado, tvProductos, tvFechaHora, tvTotalPedido, tvCreador;
+        Button btnPreparacion, btnCompletado;
+        ImageButton btnEditar;;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -99,12 +129,24 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
             tvFechaHora = itemView.findViewById(R.id.tvFechaHora);
             tvTotalPedido = itemView.findViewById(R.id.tvTotalPedido);
             tvCreador = itemView.findViewById(R.id.tvCreador);
+            btnEditar = itemView.findViewById(R.id.btnEditar);
+            btnPreparacion = itemView.findViewById(R.id.btnEnPreparacion);
+            btnCompletado = itemView.findViewById(R.id.btnCompletado);
         }
     }
 
     public void actualizarPedidos(List<Pedido> nuevos) {
         this.pedidos = nuevos;
         notifyDataSetChanged();
+    }
+
+    private void actualizarEstadoEnFirestore(String pedidoId, String nuevoEstado) {
+        FirebaseFirestore.getInstance().collection("pedidos")
+                .document(pedidoId)
+                .update("estado", nuevoEstado)
+                .addOnSuccessListener(unused -> {
+                    // Notificar al usuario o refrescar la lista desde afuera si es necesario
+                });
     }
 }
 
