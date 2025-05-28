@@ -9,11 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.daniela.miapp.fragment.CarritoClienteFragment;
-import com.daniela.miapp.fragment.HomeFragment;
 import com.daniela.miapp.fragment.InicioClienteFragment;
 import com.daniela.miapp.fragment.MisPedidosClienteFragment;
-import com.daniela.miapp.fragment.PerfilClienteFragment;
+import com.daniela.miapp.fragment.PerfilFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -84,13 +82,13 @@ public class PrincipalClienteActivity extends AppCompatActivity {
                 } else if (itemId == R.id.nav_pedidos) {
                     selectedFragment = MisPedidosClienteFragment.newInstance();
                 } else if (itemId == R.id.nav_perfil) {
-                    selectedFragment = PerfilClienteFragment.newInstance();
+                    selectedFragment = new PerfilFragment();
                 }
 
                 // Cargar el fragmento correspondiente
                 if (selectedFragment != null) {
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frameContainerCliente, selectedFragment)
+                            .replace(R.id.frameContainer, selectedFragment)
                             .addToBackStack(null)  // Permite navegar hacia atrás entre fragmentos
                             .commit();
                 }
@@ -102,9 +100,9 @@ public class PrincipalClienteActivity extends AppCompatActivity {
 
     // Método para cargar el primer fragmento
     private void loadFirstFragment() {
-        fragment = HomeFragment.newInstance();
+        fragment = new InicioClienteFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frameContainerCliente, fragment)
+                .replace(R.id.frameContainer, fragment)
                 .commit();
     }
 }

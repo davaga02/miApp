@@ -78,9 +78,7 @@ public class PrincipalAdminActivity extends AppCompatActivity {
 
                 int itemId = item.getItemId(); // Get the item ID
 
-                if (itemId == R.id.nav_home) {
-                    selectedFragment = HomeFragment.newInstance();
-                } else if (itemId == R.id.nav_orders) {
+               if (itemId == R.id.nav_orders) {
                     selectedFragment = new PedidosFragment(); // Usa el mismo fragmento
                 } else if (itemId == R.id.nav_products) {
                     selectedFragment = new ProductsFragment(); // Usa el mismo fragmento

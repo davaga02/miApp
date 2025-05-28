@@ -75,7 +75,7 @@ public class QrScannerFragment extends Fragment {
             CrearPedidoFragment fragment = CrearPedidoFragment.newInstanceParaCliente(mesaSimulada);
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.frameContainerCliente, fragment)
+                    .replace(R.id.frameContainer, fragment)
                     .addToBackStack(null)
                     .commit();
         });
@@ -117,7 +117,7 @@ public class QrScannerFragment extends Fragment {
                                     CrearPedidoFragment fragment = CrearPedidoFragment.newInstanceParaCliente(value);
                                     requireActivity().getSupportFragmentManager()
                                             .beginTransaction()
-                                            .replace(R.id.frameContainerCliente, fragment)
+                                            .replace(R.id.frameContainer, fragment)
                                             .addToBackStack(null)
                                             .commit();
                                 }

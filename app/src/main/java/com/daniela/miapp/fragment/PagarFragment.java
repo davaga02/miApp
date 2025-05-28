@@ -48,7 +48,7 @@ public class PagarFragment extends Fragment {
             SeguimientoPedidoFragment fragment = SeguimientoPedidoFragment.newInstance(pedidoId);
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.frameContainerCliente, fragment) // usa el mismo container
+                    .replace(R.id.frameContainer, fragment) // usa el mismo container
                     .addToBackStack(null)
                     .commit();
         });

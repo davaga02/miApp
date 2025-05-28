@@ -274,7 +274,7 @@ public class CrearPedidoFragment extends Fragment {
                                 PagarFragment fragment = PagarFragment.newInstance(nuevoId, total);
                                 requireActivity().getSupportFragmentManager()
                                         .beginTransaction()
-                                        .replace(R.id.frameContainerCliente, fragment)
+                                        .replace(R.id.frameContainer, fragment)
                                         .addToBackStack(null)
                                         .commit();
                             } else {

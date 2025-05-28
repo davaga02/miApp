@@ -36,9 +36,7 @@ public class PrincipalEmpleadoActivity extends AppCompatActivity {
 
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_inicio) {
-                selectedFragment = new InicioEmpleadoFragment();
-            } else if (itemId == R.id.nav_pedidos) {
+          if (itemId == R.id.nav_pedidos) {
                 selectedFragment = new PedidosFragment();
             } else if (itemId == R.id.nav_perfil) {
                 selectedFragment = new PerfilFragment(); // ✅ se carga desde Firebase

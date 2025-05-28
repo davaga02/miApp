@@ -28,6 +28,27 @@ public class InicioClienteFragment extends Fragment {
 
     private Button btnEscanearQR;
 
+
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_inicio_cliente, container, false);
+
+        btnEscanearQR = view.findViewById(R.id.btnEscanearQR);
+
+        btnEscanearQR.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, new QrScannerFragment()) // Usa tu fragmento
+                    .addToBackStack(null) // Esto permite volver atrás
+                    .commit();
+        });
+
+        return view;
+    }
+
     // Nuevo launcher moderno para escanear QR
     private final ActivityResultLauncher<Intent> qrLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -48,25 +69,6 @@ public class InicioClienteFragment extends Fragment {
                     }
                 }
             });
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_inicio_cliente, container, false);
-
-        btnEscanearQR = view.findViewById(R.id.btnEscanearQR);
-
-        btnEscanearQR.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frameContainerCliente, new QrScannerFragment()) // Usa tu fragmento
-                    .addToBackStack(null) // Esto permite volver atrás
-                    .commit();
-        });
-
-        return view;
-    }
 /*
     private void lanzarEscanerQR() {
         IntentIntegrator integrator = new IntentIntegrator(requireActivity());
