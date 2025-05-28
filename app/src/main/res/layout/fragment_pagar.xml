@@ -37,6 +37,7 @@
             android:id="@+id/etNumeroTarjeta"
             android:hint="Número de tarjeta"
             android:inputType="number"
+            android:maxLength="16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_input"
@@ -47,6 +48,7 @@
             android:id="@+id/etFecha"
             android:hint="Fecha expiración (MM/AA)"
             android:inputType="text"
+            android:maxLength="5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_input"
@@ -57,6 +59,7 @@
             android:id="@+id/etCvv"
             android:hint="CVV"
             android:inputType="numberPassword"
+            android:maxLength="3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_input"
@@ -71,6 +74,17 @@
             android:backgroundTint="#4CAF50"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
+
+        <!-- Texto de seguridad -->
+        <TextView
+            android:id="@+id/tvSeguridad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tus datos están protegidos y cifrados de forma segura."
+            android:textColor="#888888"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginTop="12dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

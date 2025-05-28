@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -41,12 +42,7 @@
         <activity android:name=".PrincipalEmpleadoActivity">
             <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
         </activity>
-        <activity android:name=".DetalleProductoActivity">
-            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
-        </activity>
-        <activity android:name=".EditarProductoActivity">
-            <!-- Esta actividad no tiene <intent-filter> ya que no es la principal -->
-        </activity>
+
     </application>
 
 </manifest>

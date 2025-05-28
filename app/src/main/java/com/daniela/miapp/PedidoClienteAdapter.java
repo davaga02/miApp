@@ -64,6 +64,7 @@ public class PedidoClienteAdapter extends RecyclerView.Adapter<PedidoClienteAdap
 
         holder.tvProductos.setText(productosTexto.toString().trim());
         holder.tvTotal.setText(String.format("Total: %.2f€", total));
+        holder.tvEstado.setText("Estado: " + pedido.getEstado());
     }
 
     @Override
@@ -72,13 +73,14 @@ public class PedidoClienteAdapter extends RecyclerView.Adapter<PedidoClienteAdap
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvFechaHora, tvProductos, tvTotal;
+        TextView tvFechaHora, tvProductos, tvTotal, tvEstado;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvFechaHora = itemView.findViewById(R.id.tvFechaHora);
             tvProductos = itemView.findViewById(R.id.tvProductosCliente);
             tvTotal = itemView.findViewById(R.id.tvTotalCliente);
+            tvEstado = itemView.findViewById(R.id.tvEstadoCliente); // nuevo
         }
     }
 

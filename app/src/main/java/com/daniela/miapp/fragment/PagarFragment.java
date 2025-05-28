@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,23 +35,41 @@ public class PagarFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        TextView tvTotal = view.findViewById(R.id.tvTotalPagar);
+        EditText etNumeroTarjeta = view.findViewById(R.id.etNumeroTarjeta);
+        EditText etFecha = view.findViewById(R.id.etFecha);
+        EditText etCvv = view.findViewById(R.id.etCvv);
         Button btnPagar = view.findViewById(R.id.btnPagar);
 
-        double total = getArguments().getDouble("total", 0.0);
-        tvTotal.setText(String.format("Total a pagar: %.2f€", total));
-
         btnPagar.setOnClickListener(v -> {
+            String numTarjeta = etNumeroTarjeta.getText().toString().trim();
+            String fecha = etFecha.getText().toString().trim();
+            String cvv = etCvv.getText().toString().trim();
+
+            if (numTarjeta.length() != 16) {
+                etNumeroTarjeta.setError("Debe tener 16 dígitos");
+                return;
+            }
+
+            if (!fecha.matches("\\d{2}/\\d{2}")) {
+                etFecha.setError("Formato inválido (MM/AA)");
+                return;
+            }
+
+            if (cvv.length() != 3) {
+                etCvv.setError("Debe tener 3 dígitos");
+                return;
+            }
+
             Toast.makeText(getContext(), "✅ Pago simulado correctamente", Toast.LENGTH_SHORT).show();
 
             String pedidoId = getArguments().getString("pedidoId");
-
             SeguimientoPedidoFragment fragment = SeguimientoPedidoFragment.newInstance(pedidoId);
             requireActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.frameContainer, fragment) // usa el mismo container
+                    .replace(R.id.frameContainer, fragment)
                     .addToBackStack(null)
                     .commit();
         });
+
     }
 }
