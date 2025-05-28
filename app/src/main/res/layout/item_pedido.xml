@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Título y botón editar -->
+        <!-- Mesa y botones -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="1"
+                android:text="Mesa 1"
                 android:textColor="#E34A35"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -38,6 +38,7 @@
                 android:src="@drawable/ic_edit"
                 android:contentDescription="Editar"
                 app:tint="#444" />
+
             <ImageButton
                 android:id="@+id/btnEliminar"
                 android:layout_width="wrap_content"
@@ -60,7 +61,7 @@
             android:textColor="#888888"
             android:layout_marginTop="8dp" />
 
-        <!-- Botones de estado -->
+        <!-- Botones estado -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,16 +88,7 @@
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
-        <!-- Datos del pedido -->
-        <TextView
-            android:id="@+id/tvCreador"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Creado por: admin@ejemplo.com"
-            android:textSize="14sp"
-            android:textColor="#777777"
-            android:layout_marginTop="12dp" />
-
+        <!-- Fecha y hora -->
         <TextView
             android:id="@+id/tvFechaHora"
             android:layout_width="wrap_content"
@@ -104,26 +96,25 @@
             android:text="13 mayo 2025 - 14:35"
             android:textColor="#999999"
             android:textSize="13sp"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="8dp" />
+
+        <!-- Ocultos: productos, creador, total -->
+        <TextView
+            android:id="@+id/tvCreador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvProductos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="• Producto 1 x2\n• Producto 2 x1"
-            android:layout_marginTop="12dp"
-            android:textColor="#444444"
-            android:textSize="15sp" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvTotalPedido"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total: 10€"
-            android:textStyle="bold"
-            android:textColor="#E34A35"
-            android:textSize="16sp"
-            android:layout_marginTop="8dp" />
+            android:visibility="gone" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
-

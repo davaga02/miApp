@@ -41,4 +41,10 @@
     <string-array name="subcategorias_default">
         <item>Selecciona una subcategoría</item>
     </string-array>
+
+    <string-array name="filtro_pedidos">
+        <item>Todos</item>
+        <item>Clientes</item>
+        <item>Empleados</item>
+    </string-array>
 </resources>

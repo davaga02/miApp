@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.daniela.miapp.Pedido;
 import com.daniela.miapp.PedidoAdapter;
 import com.daniela.miapp.R;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.*;
@@ -28,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PedidosFragment extends Fragment {
 
@@ -50,6 +54,8 @@ public class PedidosFragment extends Fragment {
         adapter = new PedidoAdapter(listaPedidos);
         recyclerPedidos.setAdapter(adapter);
 
+
+
         db = FirebaseFirestore.getInstance();
         cargarPedidos();
 
@@ -68,7 +74,25 @@ public class PedidosFragment extends Fragment {
 
         Button btnVerActivos = view.findViewById(R.id.btnVerActivos);
         btnVerActivos.setOnClickListener(v -> cargarPedidos());
+
+        adapter.setOnPedidoClickListener(pedido -> {
+            DetallePedidoFragment fragment = DetallePedidoFragment.newInstance(pedido.getId());
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+
+
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
 
     private void cargarPedidos() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -140,6 +164,19 @@ public class PedidosFragment extends Fragment {
                     Toast.makeText(getContext(), "Error al cargar pedidos", Toast.LENGTH_SHORT).show();
                 });
     }
+
+
+
+    private void mostrarPedidosFiltrados(List<Pedido> pedidos) {
+        // Ordenar por timestamp (más reciente primero)
+        pedidos.sort((p1, p2) -> Long.compare(p2.getTimestamp(), p1.getTimestamp()));
+
+        listaPedidos.clear();
+        listaPedidos.addAll(pedidos);
+        adapter.actualizarPedidos(listaPedidos);
+    }
+
+
 
     private void cargarPedidosCompletados() {
         db.collection("pedidos")

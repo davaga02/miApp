@@ -33,6 +33,17 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
         this.pedidos = pedidos;
     }
 
+
+    public interface OnPedidoClickListener {
+        void onPedidoClick(Pedido pedido);
+    }
+
+    private OnPedidoClickListener listener;
+
+    public void setOnPedidoClickListener(OnPedidoClickListener listener) {
+        this.listener = listener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -71,6 +82,8 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
             Object subtotalObj = p.get("subtotal");
             if (subtotalObj instanceof Number) {
                 total += ((Number) subtotalObj).doubleValue();
+            }else {
+                subtotalObj = 0.0;
             }
 
             productosTexto.append(linea).append("\n");
@@ -123,14 +136,23 @@ public class PedidoAdapter extends RecyclerView.Adapter<PedidoAdapter.ViewHolder
                                 .delete()
                                 .addOnSuccessListener(unused -> {
                                     Toast.makeText(holder.itemView.getContext(), "Pedido eliminado", Toast.LENGTH_SHORT).show();
-                                    pedidos.remove(position);
-                                    notifyItemRemoved(position);
+                                    int currentPosition = holder.getAdapterPosition();
+                                    if (currentPosition != RecyclerView.NO_POSITION) {
+                                        pedidos.remove(currentPosition);
+                                        notifyItemRemoved(currentPosition);
+                                    }
                                 })
                                 .addOnFailureListener(e ->
                                         Toast.makeText(holder.itemView.getContext(), "Error al eliminar", Toast.LENGTH_SHORT).show());
                     })
                     .setNegativeButton("No", null)
                     .show();
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onPedidoClick(pedido);
+            }
         });
     }
 
