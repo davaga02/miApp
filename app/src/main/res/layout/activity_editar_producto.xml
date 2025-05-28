@@ -2,70 +2,101 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="24dp"
     android:background="@color/fef4f0">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="40dp">
 
+        <!-- Título -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Editar Producto"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/e34a35"
+            android:fontFamily="@font/baloo"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Nombre -->
         <EditText
             android:id="@+id/etNombre"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_input"
+            android:hint="Nombre"
+            android:padding="12dp"
+            android:textColor="#000000"
             android:fontFamily="@font/baloo"
-            android:backgroundTint="@color/gray"
-            android:hint="Nombre" />
+            android:layout_marginBottom="12dp" />
 
+        <!-- Descripción -->
         <EditText
             android:id="@+id/etDescripcion"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_input"
+            android:hint="Descripción"
+            android:padding="12dp"
+            android:textColor="#000000"
             android:fontFamily="@font/baloo"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/gray"
-            android:hint="Descripción" />
+            android:layout_marginBottom="12dp" />
 
+        <!-- Stock -->
         <EditText
             android:id="@+id/etStock"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/baloo"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/gray"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_input"
             android:hint="Stock"
-            android:inputType="number" />
+            android:inputType="number"
+            android:padding="12dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/baloo"
+            android:layout_marginBottom="12dp" />
 
+        <!-- Precio -->
         <EditText
             android:id="@+id/etPrecio"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/baloo"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="@color/gray"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_input"
             android:hint="Precio"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:padding="12dp"
+            android:textColor="#000000"
+            android:fontFamily="@font/baloo"
+            android:layout_marginBottom="24dp" />
 
+        <!-- Botón Guardar -->
         <Button
             android:id="@+id/btnGuardar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/baloo"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="@color/e34a35"
+            android:layout_height="50dp"
             android:text="Guardar cambios"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/baloo"
+            android:backgroundTint="@color/e34a35"
+            app:cornerRadius="16dp"
+            android:layout_marginBottom="12dp" />
 
+        <!-- Botón Cancelar -->
         <Button
             android:id="@+id/btnCancelar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/baloo"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/gray"
+            android:layout_height="50dp"
             android:text="Cancelar"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/baloo"
+            android:backgroundTint="@color/gray"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 </ScrollView>

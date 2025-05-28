@@ -18,37 +18,62 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#F3B3CD"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
+            <!-- Sección de Logo + Nombre -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginBottom="24dp">
+
+                <ImageView
+                    android:id="@+id/logoImage"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/logo" />
+
+                <TextView
+                    android:id="@+id/titleWelcome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pídeme"
+                    android:textColor="#E34A35"
+                    android:textSize="26sp"
+                    android:fontFamily="@font/baloo"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Subtítulo -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
-                android:fontFamily="@font/baloo"
                 android:text="Iniciar Sesión"
+                android:textSize="22sp"
+                android:textStyle="bold"
                 android:textColor="#E34A35"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/baloo"
+                android:layout_marginBottom="32dp" />
 
-            <!-- Input: Correo -->
+            <!-- Email -->
             <EditText
                 android:id="@+id/email"
-                android:importantForAutofill="no"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/rounded_input"
                 android:hint="Correo electrónico"
                 android:inputType="textEmailAddress"
                 android:padding="12dp"
                 android:textColor="#3E3E3E" />
 
-            <!-- Input: Contraseña -->
+            <!-- Contraseña -->
             <EditText
                 android:id="@+id/password"
-                android:importantForAutofill="no"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
@@ -58,30 +83,30 @@
                 android:padding="12dp"
                 android:textColor="#3E3E3E" />
 
-            <!-- Olvidaste tu contraseña -->
+            <!-- Olvidaste contraseña -->
             <TextView
                 android:id="@+id/forgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="24dp"
                 android:text="¿Olvidaste tu contraseña?"
                 android:textColor="#E34A35"
                 android:textSize="14sp" />
 
-            <!-- Botón: Acceder -->
+            <!-- Botón iniciar sesión -->
             <Button
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="#E34A35"
-                android:onClick="onClikAcceder"
                 android:text="Iniciar sesión"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
+                android:backgroundTint="#E34A35"
+                android:onClick="onClikAcceder"
                 app:cornerRadius="12dp" />
 
-            <!-- Botón de Google -->
+            <!-- Botón Google -->
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/btnGoogleSignIn"
                 android:layout_width="wrap_content"
@@ -90,16 +115,16 @@
                 android:layout_marginTop="20dp"
                 android:onClick="loginConGoogle" />
 
-            <!-- ¿No tienes cuenta? -->
+            <!-- Registrarse -->
             <TextView
                 android:id="@+id/tvRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:onClick="onClickRegistrar"
                 android:text="¿No tienes cuenta? Regístrate"
                 android:textColor="#E34A35"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:layout_marginTop="20dp"
+                android:onClick="onClickRegistrar" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
