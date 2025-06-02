@@ -106,12 +106,12 @@ public class PedidosFragment extends Fragment {
 
         Query query;
 
-        if ("administrador".equals(rol)) {
+        if ("administrador".equals(rol) || "empleado".equals(rol)) {
             query = ref
                     .whereNotEqualTo("estado", "Completado")
                     .orderBy("timestamp", Query.Direction.DESCENDING);
         } else {
-            query = ref.whereEqualTo("usuario", uid);
+            query = ref.whereEqualTo("usuario", uid); // para un cliente, sí filtras por su UID
         }
 
         query.get()

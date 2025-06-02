@@ -84,6 +84,9 @@ public class CrearPedidoFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        db = FirebaseFirestore.getInstance();
+
         spinnerMesas = view.findViewById(R.id.spinnerMesas);
 
         if (getArguments() != null && getArguments().containsKey("mesaCliente")) {
@@ -101,15 +104,12 @@ public class CrearPedidoFragment extends Fragment {
         btnConfirmarPedido = view.findViewById(R.id.btnConfirmarPedido);
 
         TextView tvTitulo = view.findViewById(R.id.tvTituloCrear);
+
         if (esEdicion) {
-            Log.d("EDITAR_PEDIDO", "¿Modo edición?: " + esEdicion + ", pedidoId: " + pedidoId);
-            prepararParaEdicion(); // ✅ Ahora usamos el método nuevo
-        } else {
-            tvTitulo.setText("Nuevo Pedido");
-            btnConfirmarPedido.setText("Confirmar Pedido");
+            tvTitulo.setText("Editar Pedido");
+            btnConfirmarPedido.setText("Actualizar Pedido");
         }
 
-        db = FirebaseFirestore.getInstance();
 
         spinnerCategorias = view.findViewById(R.id.spinnerCategorias);
         searchView = view.findViewById(R.id.searchViewProducto);
@@ -181,48 +181,51 @@ public class CrearPedidoFragment extends Fragment {
         adapter.setOnCambioCantidadListener(this::actualizarTotal);
 
         btnConfirmarPedido.setOnClickListener(v -> {
-
             String mesaSeleccionada = (String) spinnerMesas.getSelectedItem();
 
-            //cambios
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             String usuarioId = currentUser != null ? currentUser.getUid() : "desconocido";
             String correoUsuario = currentUser != null ? currentUser.getEmail() : "sin_correo";
 
-// Obtén el nombre desde SharedPreferences
             SharedPreferences prefs = requireContext().getSharedPreferences("MiAppPrefs", Context.MODE_PRIVATE);
             String nombreUsuario = prefs.getString("nombreUsuario", "Desconocido");
 
-            List<Map<String, Object>> productosFinal = new ArrayList<>();
-
-            for (ProductoSeleccionado ps : adapter.getSeleccionados().values()) {
+            // ✅ Limpiar productos con cantidad 0
+            Map<String, ProductoSeleccionado> seleccionadosValidos = new HashMap<>();
+            for (Map.Entry<String, ProductoSeleccionado> entry : adapter.getSeleccionados().entrySet()) {
+                ProductoSeleccionado ps = entry.getValue();
                 if (ps.getCantidad() > 0) {
-                    Producto producto = buscarProductoPorId(ps.getProductoId());
-                    if (producto != null) {
-                        Map<String, Object> item = new HashMap<>();
-                        item.put("id", producto.getId());
-                        item.put("nombre", producto.getNombre());
-                        item.put("cantidad", ps.getCantidad());
+                    seleccionadosValidos.put(entry.getKey(), ps);
+                }
+            }
+            adapter.setSeleccionados(seleccionadosValidos);
 
-                        double precioUnitario = 0.0;
-                        if (producto.getPrecios() != null) {
-                            if (ps.getTamaño() != null && producto.getPrecios().containsKey(ps.getTamaño())) {
-                                precioUnitario = producto.getPrecios().get(ps.getTamaño());
-                            } else if (producto.getPrecios().containsKey("único")) {
-                                precioUnitario = producto.getPrecios().get("único");
-                            }
+            List<Map<String, Object>> productosFinal = new ArrayList<>();
+            for (ProductoSeleccionado ps : seleccionadosValidos.values()) {
+                Producto producto = buscarProductoPorId(ps.getProductoId());
+                if (producto != null) {
+                    Map<String, Object> item = new HashMap<>();
+                    item.put("id", producto.getId());
+                    item.put("nombre", producto.getNombre());
+                    item.put("cantidad", ps.getCantidad());
+
+                    double precioUnitario = 0.0;
+                    if (producto.getPrecios() != null) {
+                        if (ps.getTamaño() != null && producto.getPrecios().containsKey(ps.getTamaño())) {
+                            precioUnitario = producto.getPrecios().get(ps.getTamaño());
+                        } else if (producto.getPrecios().containsKey("único")) {
+                            precioUnitario = producto.getPrecios().get("único");
                         }
-
-                        double subtotal = precioUnitario * ps.getCantidad();
-
-                        item.put("precioUnitario", precioUnitario);
-                        item.put("subtotal", subtotal);
-
-                        if (ps.getTamaño() != null) item.put("tamaño", ps.getTamaño());
-                        if (ps.getSabor() != null) item.put("sabor", ps.getSabor());
-
-                        productosFinal.add(item);
                     }
+
+                    double subtotal = precioUnitario * ps.getCantidad();
+                    item.put("precioUnitario", precioUnitario);
+                    item.put("subtotal", subtotal);
+
+                    if (ps.getTamaño() != null) item.put("tamaño", ps.getTamaño());
+                    if (ps.getSabor() != null) item.put("sabor", ps.getSabor());
+
+                    productosFinal.add(item);
                 }
             }
 
@@ -231,8 +234,7 @@ public class CrearPedidoFragment extends Fragment {
                 return;
             }
 
-//Cambios
-           Pedido pedido = new Pedido(
+            Pedido pedido = new Pedido(
                     UUID.randomUUID().toString(),
                     usuarioId,
                     mesaSeleccionada,
@@ -251,9 +253,13 @@ public class CrearPedidoFragment extends Fragment {
             datosPedido.put("estado", "Pendiente");
             datosPedido.put("timestamp", System.currentTimeMillis());
 
+            // ✅ Este campo distingue que el pedido lo hizo un cliente
+            datosPedido.put("tipo", "cliente");
+
             if (esEdicion) {
+                datosPedido.put("id", pedidoId); // Mantener el mismo ID si se edita
                 db.collection("pedidos").document(pedidoId)
-                        .update(datosPedido)
+                        .set(datosPedido)
                         .addOnSuccessListener(unused -> {
                             Toast.makeText(requireContext(), "Pedido actualizado", Toast.LENGTH_SHORT).show();
                             requireActivity().getSupportFragmentManager().popBackStack();
@@ -287,15 +293,6 @@ public class CrearPedidoFragment extends Fragment {
         });
 
 
-            Button btnVolver = view.findViewById(R.id.btnVolver);
-            btnVolver.setOnClickListener(v -> {
-                requireActivity().getSupportFragmentManager().popBackStack();
-            });
-
-        if (esEdicion) {
-            cargarPedidoParaEditar(pedidoId);
-        }
-
 
     }
 
@@ -312,14 +309,19 @@ public class CrearPedidoFragment extends Fragment {
                         listaProductos.add(p);
                     }
 
-                    // Asegúrate de crear el adapter aquí, cuando ya tienes sabores y productos
+                    // Crear el adapter una vez que los productos están listos
                     adapter = new ProductoPedidoAdapter(listaProductos);
-                    adapter.setMapaSabores(mapaSabores);  // ya están cargados
+                    adapter.setMapaSabores(mapaSabores);  // usa sabores si ya se cargaron
                     adapter.setOnCambioCantidadListener(this::actualizarTotal);
                     recyclerProductos.setAdapter(adapter);
 
                     adapter.notifyDataSetChanged();
                     actualizarTotal();
+
+                    // 🔁 Si estamos editando, cargar los productos seleccionados ahora
+                    if (esEdicion) {
+                        cargarPedidoParaEditar(pedidoId);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "Error al cargar productos", Toast.LENGTH_SHORT).show();
@@ -455,7 +457,6 @@ public class CrearPedidoFragment extends Fragment {
         btnConfirmarPedido.setText("Actualizar Pedido");
         tvTitulo.setText("Editar Pedido");
 
-        cargarPedidoParaEditar(pedidoId);
     }
 
     private double calcularTotal(List<Map<String, Object>> productosFinal) {
