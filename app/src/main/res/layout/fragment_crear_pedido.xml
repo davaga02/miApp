@@ -4,36 +4,37 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="20dp"
     android:background="#FEF4F0">
 
     <!-- Botón volver -->
     <Button
         android:id="@+id/btnVolver"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
+        android:minWidth="120dp"
         android:text="← Volver"
-        android:backgroundTint="#E34A35"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:fontFamily="@font/baloo"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        android:layout_marginBottom="12dp"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#E34A35"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="12dp"
+        android:layout_marginBottom="20dp"
         android:drawablePadding="8dp" />
 
-    <!-- Título (dinámico según modo edición o creación) -->
+    <!-- Título -->
     <TextView
         android:id="@+id/tvTituloCrear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nuevo Pedido"
         android:textColor="#E34A35"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         android:fontFamily="@font/baloo"
         android:layout_gravity="center"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="24dp" />
 
     <!-- Buscar producto -->
     <SearchView
@@ -41,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:queryHint="Buscar producto"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_input" />
 
     <!-- Categoría -->
@@ -50,8 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_spinner"
-        android:padding="12dp"
-        android:layout_marginBottom="12dp" />
+        android:padding="16dp"
+        android:textAlignment="center"
+        android:layout_marginBottom="16dp" />
 
     <!-- Productos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -59,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="16dp" />
 
     <!-- Selección de mesa -->
     <Spinner
@@ -67,8 +69,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_spinner"
-        android:padding="12dp"
-        android:layout_marginBottom="12dp" />
+        android:padding="16dp"
+        android:textAlignment="center"
+        android:layout_marginBottom="16dp" />
 
     <!-- Total -->
     <TextView
@@ -76,22 +79,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Total: 0.00€"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textStyle="bold"
         android:textColor="#E34A35"
         android:gravity="end"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginBottom="20dp" />
 
-    <!-- Confirmar o Actualizar -->
+    <!-- Confirmar -->
     <Button
         android:id="@+id/btnConfirmarPedido"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="56dp"
         android:text="Confirmar pedido"
+        android:textSize="18sp"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
         android:backgroundTint="#E34A35"
         android:fontFamily="@font/baloo"
-        app:cornerRadius="12dp"
+        app:cornerRadius="16dp"
         android:layout_marginTop="8dp" />
 </LinearLayout>
