@@ -1,6 +1,7 @@
 package com.daniela.miapp.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class MisPedidosClienteFragment extends Fragment {
 
         FirebaseFirestore.getInstance().collection("pedidos")
                 .whereEqualTo("usuario", uid)
+                .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING)  // 👈 ORDENAR POR FECHA RECIENTE
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     listaPedidos.clear();
@@ -88,11 +90,14 @@ public class MisPedidosClienteFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
+
                     adapter.actualizarPedidos(listaPedidos);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Error al cargar pedidos", Toast.LENGTH_SHORT).show();
+                    Log.e("MIS_PEDIDOS", "Error al cargar pedidos", e);
                     e.printStackTrace();
                 });
     }
+
 }
