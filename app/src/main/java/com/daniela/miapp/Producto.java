@@ -19,7 +19,7 @@ public class Producto implements Parcelable {
     private Map<String, Double> precios;
     private String imagenURL;
     private boolean esCategoria;
-    private boolean requiereSabor;       // true si necesita elegir un sabor
+    private Boolean requiereSabor;       // true si necesita elegir un sabor
     private List<String> sabores;        // Lista de sabores disponibles
 
     public Producto() {}
@@ -142,7 +142,9 @@ public class Producto implements Parcelable {
 
     public void setImagenURL(String imagenURL) { this.imagenURL = imagenURL; }
 
-    public boolean isRequiereSabor() { return requiereSabor; }
+    public boolean isRequiereSabor() {
+        return requiereSabor != null && requiereSabor;
+    }
     public List<String> getSabores() { return sabores; }
 
     public boolean isEsCategoria() {

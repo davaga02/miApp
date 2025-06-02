@@ -176,7 +176,7 @@ public class CrearPedidoFragment extends Fragment {
         adapter = new ProductoPedidoAdapter(listaProductos);
         recyclerProductos.setAdapter(adapter);
 
-        cargarSabores(); // ✅ AQUÍ: cargar los sabores desde Firestore
+        cargarSaboresEstaticos();
         cargarProductosDesdeFirestore();
         adapter.setOnCambioCantidadListener(this::actualizarTotal);
 
@@ -307,11 +307,19 @@ public class CrearPedidoFragment extends Fragment {
                     for (DocumentSnapshot doc : query) {
                         Producto p = doc.toObject(Producto.class);
                         if (p.getId() == null) {
-                            p.setId(doc.getId()); // asignar el ID de Firestore
+                            p.setId(doc.getId());
                         }
                         listaProductos.add(p);
                     }
+
+                    // Asegúrate de crear el adapter aquí, cuando ya tienes sabores y productos
+                    adapter = new ProductoPedidoAdapter(listaProductos);
+                    adapter.setMapaSabores(mapaSabores);  // ya están cargados
+                    adapter.setOnCambioCantidadListener(this::actualizarTotal);
+                    recyclerProductos.setAdapter(adapter);
+
                     adapter.notifyDataSetChanged();
+                    actualizarTotal();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(requireContext(), "Error al cargar productos", Toast.LENGTH_SHORT).show();
@@ -361,7 +369,7 @@ public class CrearPedidoFragment extends Fragment {
                         String nombre = doc.getString("nombre");
                         String categoria = doc.getString("categoria");
                         if (nombre != null && categoria != null) {
-                            mapaSabores.computeIfAbsent(categoria, k -> new ArrayList<>()).add(nombre);
+                            mapaSabores.computeIfAbsent(categoria.toLowerCase(Locale.ROOT), k -> new ArrayList<>()).add(nombre);
                         }
                     }
                     adapter.setMapaSabores(mapaSabores);
@@ -472,6 +480,39 @@ public class CrearPedidoFragment extends Fragment {
         }
         return total;
     }
+
+    private void cargarSaboresYLuegoProductos() {
+        db.collection("sabores")
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    mapaSabores.clear();
+                    for (DocumentSnapshot doc : snapshot) {
+                        String nombre = doc.getString("nombre");
+                        String categoria = doc.getString("categoria");
+                        if (nombre != null && categoria != null) {
+                            mapaSabores.computeIfAbsent(categoria.toLowerCase(Locale.ROOT), k -> new ArrayList<>()).add(nombre);
+                        }
+                    }
+
+                    // Después de tener los sabores, cargar productos
+                    cargarProductosDesdeFirestore();  // aquí se cargan los productos
+                });
+    }
+
+    private void cargarSaboresEstaticos() {
+        mapaSabores.clear();
+
+        mapaSabores.put("helados", Arrays.asList(
+                "Vainilla", "Chocolate", "Fresa", "Turrón", "Cookies", "Stracciatella", "Pistacho"
+        ));
+
+        mapaSabores.put("granizados", Arrays.asList(
+                "Limón", "Cola", "Naranja", "Sandía", "Mojito", "Fresa", "Cereza"
+        ));
+
+        adapter.setMapaSabores(mapaSabores);
+    }
+
 
 
 }

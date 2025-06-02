@@ -2,6 +2,7 @@ package com.daniela.miapp.adapter;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +25,13 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
 
 
     public void setMapaSabores(Map<String, List<String>> mapa) {
-        this.mapaSabores = mapa;
+        this.mapaSabores = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : mapa.entrySet()) {
+            this.mapaSabores.put(entry.getKey().toLowerCase(), entry.getValue());
+        }
         notifyDataSetChanged();
     }
+
 
     public ProductoPedidoAdapter(List<Producto> productos) {
         this.productos = productos;
@@ -92,10 +97,19 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
             holder.spinnerTamaño.setVisibility(View.GONE);
         }
 
+
         // 🔹 Configurar sabor si aplica
         if (producto.isRequiereSabor()) {
             holder.spinnerSabor.setVisibility(View.VISIBLE);
-            List<String> sabores = mapaSabores.getOrDefault(producto.getCategoria(), new ArrayList<>());
+
+            String categoriaKey = producto.getCategoria() != null ? producto.getCategoria().toLowerCase(Locale.ROOT) : "";
+            List<String> sabores = mapaSabores.getOrDefault(categoriaKey, new ArrayList<>());
+
+            Log.d("DEBUG_SABOR", "Producto: " + producto.getNombre() +
+                    " | Requiere sabor: " + producto.isRequiereSabor() +
+                    " | Categoría: " + producto.getCategoria() +
+                    " | Sabores disponibles: " + mapaSabores.get(producto.getCategoria()));
+
             ArrayAdapter<String> adapterSabor = new ArrayAdapter<>(holder.itemView.getContext(),
                     android.R.layout.simple_spinner_item, sabores);
             adapterSabor.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -202,8 +216,12 @@ public class ProductoPedidoAdapter extends RecyclerView.Adapter<ProductoPedidoAd
                 sabor = (String) holder.spinnerSabor.getSelectedItem();
             }
 
+            String key = producto.getId();
+            if (tamaño != null) key += "_" + tamaño;
+            if (sabor != null) key += "_" + sabor;
+
             ProductoSeleccionado seleccionado = new ProductoSeleccionado(producto.getId(), cantidad, tamaño, sabor);
-            seleccionados.put(producto.getId(), seleccionado);
+            seleccionados.put(key, seleccionado);  // ✅ Clave única por combinación
 
             if (listener != null) {
                 listener.onCambio();
